@@ -1,30 +1,39 @@
-﻿public static class Priority {
-    public static void Test() {
-        // TODO Problem 2 - Write and run test cases and fix the code to match requirements
-        // Example of creating and using the priority queue
-        var priorityQueue = new PriorityQueue();
-        Console.WriteLine(priorityQueue);
+﻿public class PriorityQueue<T>
+{
+    private Queue<(T data, int priority)> queue;
 
-        // Test Cases
+    public PriorityQueue()
+    {
+        queue = new Queue<(T, int)>();
+    }
 
-        // Test 1
-        // Scenario: 
-        // Expected Result: 
-        Console.WriteLine("Test 1");
+    public void Enqueue(T data, int priority)
+    {
+        queue.Enqueue((data, priority));
+    }
 
-        // Defect(s) Found: 
+    public T Dequeue()
+    {
+        if (queue.Count == 0)
+        {
+            Console.WriteLine("Error: Queue is empty");
+            return default(T);
+        }
 
-        Console.WriteLine("---------");
+        (T data, int priority) = default;
+        int highestPriority = int.MinValue;
 
-        // Test 2
-        // Scenario: 
-        // Expected Result: 
-        Console.WriteLine("Test 2");
+        foreach ((T d, int p) in queue)
+        {
+            if (p > highestPriority)
+            {
+                highestPriority = p;
+                data = d;
+            }
+        }
 
-        // Defect(s) Found: 
+        queue = new Queue<(T, int)>(queue.Where(x => !x.Equals((data, highestPriority))));
 
-        Console.WriteLine("---------");
-
-        // Add more Test Cases As Needed Below
+        return data;
     }
 }
