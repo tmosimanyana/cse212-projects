@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 public class TakingTurnsQueue
 {
     private Queue<Person> queue;
@@ -25,7 +28,7 @@ public class TakingTurnsQueue
         Person person = queue.Dequeue();
         Console.WriteLine(person.Name);
 
-        if (person.Turns > 0 || person.Turns == 0)
+        if (person.Turns != 1)
         {
             person.DecrementTurn();
             queue.Enqueue(person);
@@ -48,5 +51,10 @@ public class Person
     {
         if (Turns > 0)
             Turns--;
+    }
+
+    public override string ToString()
+    {
+        return $"{Name} ({Turns})";
     }
 }

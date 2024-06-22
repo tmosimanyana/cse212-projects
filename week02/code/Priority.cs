@@ -1,39 +1,54 @@
-﻿public class PriorityQueue<T>
+﻿using System;
+
+public static class Priority
 {
-    private Queue<(T data, int priority)> queue;
-
-    public PriorityQueue()
+    public static void Test()
     {
-        queue = new Queue<(T, int)>();
-    }
+        // Test 1
+        Console.WriteLine("Test 1");
+        var pq = new PriorityQueue();
+        pq.Enqueue("A", 1);
+        pq.Enqueue("B", 3);
+        pq.Enqueue("C", 2);
+        Console.WriteLine(pq.Dequeue());
+        Console.WriteLine(pq.Dequeue());
+        Console.WriteLine(pq.Dequeue());
+        // Expected: B, C, A
+        // Defect(s) Found:
 
-    public void Enqueue(T data, int priority)
-    {
-        queue.Enqueue((data, priority));
-    }
+        Console.WriteLine("---------");
 
-    public T Dequeue()
-    {
-        if (queue.Count == 0)
-        {
-            Console.WriteLine("Error: Queue is empty");
-            return default(T);
-        }
+        // Test 2
+        Console.WriteLine("Test 2");
+        pq = new PriorityQueue();
+        pq.Enqueue("A", 1);
+        pq.Enqueue("B", 3);
+        pq.Enqueue("C", 3);
+        pq.Enqueue("D", 2);
+        Console.WriteLine(pq.Dequeue());
+        Console.WriteLine(pq.Dequeue());
+        Console.WriteLine(pq.Dequeue());
+        Console.WriteLine(pq.Dequeue());
+        // Expected: B, C, D, A
+        // Defect(s) Found:
 
-        (T data, int priority) = default;
-        int highestPriority = int.MinValue;
+        Console.WriteLine("---------");
 
-        foreach ((T d, int p) in queue)
-        {
-            if (p > highestPriority)
-            {
-                highestPriority = p;
-                data = d;
-            }
-        }
+        // Test 3
+        Console.WriteLine("Test 3");
+        pq = new PriorityQueue();
+        pq.Enqueue("A", 1);
+        Console.WriteLine(pq.Dequeue());
+        // Expected: A
+        // Defect(s) Found:
 
-        queue = new Queue<(T, int)>(queue.Where(x => !x.Equals((data, highestPriority))));
+        Console.WriteLine("---------");
 
-        return data;
+        // Test 4
+        Console.WriteLine("Test 4");
+        pq = new PriorityQueue();
+        Console.WriteLine(pq.Dequeue());
+        // Expected: Error: Queue is empty
+        // Defect(s) Found:
     }
 }
