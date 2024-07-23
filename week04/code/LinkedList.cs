@@ -1,146 +1,156 @@
-using System.Collections;
+using System;
+using System.Collections.Generic;
 
-public class LinkedList : IEnumerable<int> {
-    private Node? _head;
-    private Node? _tail;
+public class Node
+{
+    public int Data { get; set; }
+    public Node Next { get; set; }
 
-    // Insert a new node at the front (i.e. the head) of the linked list.
-    public void InsertHead(int value) {
-        Node newNode = new Node(value);
+    public Node(int data)
+    {
+        Data = data;
+        Next = null;
+    }
+}
 
-        if (_head is null) {
-            _head = newNode;
-            _tail = newNode;
-        } else {
-            newNode.Next = _head;
-            _head.Prev = newNode;
-            _head = newNode;
-        }
+public class LinkedList
+{
+    private Node head;
+
+    public LinkedList()
+    {
+        head = null;
     }
 
-    // Insert a new node at the back (i.e. the tail) of the linked list.
-    public void InsertTail(int value) {
-        Node newNode = new Node(value);
-
-        if (_tail is null) {
-            _head = newNode;
-            _tail = newNode;
-        } else {
-            _tail.Next = newNode;
-            newNode.Prev = _tail;
-            _tail = newNode;
+    public void InsertTail(int data)
+    {
+        Node newNode = new Node(data);
+        if (head == null)
+        {
+            head = newNode;
         }
-    }
-
-    // Remove the first node (i.e. the head) of the linked list.
-    public void RemoveHead() {
-        if (_head == _tail) {
-            _head = null;
-            _tail = null;
-        } else if (_head is not null) {
-            _head = _head.Next;
-            if (_head is not null) {
-                _head.Prev = null;
+        else
+        {
+            Node current = head;
+            while (current.Next != null)
+            {
+                current = current.Next;
             }
+            current.Next = newNode;
         }
     }
 
-    // Remove the last node (i.e. the tail) of the linked list.
-    public void RemoveTail() {
-        if (_tail is null) return;
+    public void InsertHead(int data)
+    {
+        Node newNode = new Node(data);
+        newNode.Next = head;
+        head = newNode;
+    }
 
-        if (_head == _tail) {
-            _head = null;
-            _tail = null;
-        } else {
-            _tail = _tail.Prev;
-            if (_tail is not null) {
-                _tail.Next = null;
+    public void RemoveTail()
+    {
+        if (head == null) return;
+
+        if (head.Next == null)
+        {
+            head = null;
+            return;
+        }
+
+        Node current = head;
+        while (current.Next.Next != null)
+        {
+            current = current.Next;
+        }
+        current.Next = null;
+    }
+
+    public void Remove(int data)
+    {
+        if (head == null) return;
+
+        if (head.Data == data)
+        {
+            head = head.Next;
+            return;
+        }
+
+        Node current = head;
+        while (current.Next != null && current.Next.Data != data)
+        {
+            current = current.Next;
+        }
+
+        if (current.Next != null)
+        {
+            current.Next = current.Next.Next;
+        }
+    }
+
+    public void Replace(int oldValue, int newValue)
+    {
+        Node current = head;
+        while (current != null)
+        {
+            if (current.Data == oldValue)
+            {
+                current.Data = newValue;
             }
+            current = current.Next;
         }
     }
 
-    // Insert 'newValue' after the first occurrence of 'value' in the linked list.
-    public void InsertAfter(int value, int newValue) {
-        Node? curr = _head;
-        while (curr is not null) {
-            if (curr.Data == value) {
-                Node newNode = new Node(newValue);
-                newNode.Prev = curr;
-                newNode.Next = curr.Next;
-                if (curr.Next is not null) {
-                    curr.Next.Prev = newNode;
-                }
-                curr.Next = newNode;
-
-                if (curr == _tail) {
-                    _tail = newNode;
-                }
-                return;
-            }
-            curr = curr.Next;
+    public IEnumerable<int> Reverse()
+    {
+        Stack<int> stack = new Stack<int>();
+        Node current = head;
+        while (current != null)
+        {
+            stack.Push(current.Data);
+            current = current.Next;
+        }
+        while (stack.Count > 0)
+        {
+            yield return stack.Pop();
         }
     }
 
-    // Remove the first node that contains 'value'.
-    public void Remove(int value) {
-        Node? curr = _head;
-        while (curr is not null) {
-            if (curr.Data == value) {
-                if (curr == _head) {
-                    RemoveHead();
-                } else if (curr == _tail) {
-                    RemoveTail();
-                } else {
-                    curr.Prev!.Next = curr.Next;
-                    curr.Next!.Prev = curr.Prev;
-                }
-                return;
-            }
-            curr = curr.Next;
+    public void PrintList()
+    {
+        Node current = head;
+        while (current != null)
+        {
+            Console.Write(current.Data + " -> ");
+            current = current.Next;
         }
+        Console.WriteLine("null");
     }
+}
 
-    // Search for all instances of 'oldValue' and replace the value to 'newValue'.
-    public void Replace(int oldValue, int newValue) {
-        Node? curr = _head;
-        while (curr is not null) {
-            if (curr.Data == oldValue) {
-                curr.Data = newValue;
-            }
-            curr = curr.Next;
+public class Program
+{
+    public static void Main()
+    {
+        LinkedList list = new LinkedList();
+        list.InsertTail(1);
+        list.InsertTail(2);
+        list.InsertTail(3);
+        list.PrintList(); // Expected output: 1 -> 2 -> 3 -> null
+
+        list.RemoveTail();
+        list.PrintList(); // Expected output: 1 -> 2 -> null
+
+        list.Remove(2);
+        list.PrintList(); // Expected output: 1 -> null
+
+        list.InsertHead(2);
+        list.InsertHead(2);
+        list.Replace(2, 4);
+        list.PrintList(); // Expected output: 4 -> 4 -> 1 -> null
+
+        foreach (var item in list.Reverse())
+        {
+            Console.WriteLine(item); // Expected output: 1 4 4
         }
-    }
-
-    // Yields all values in the linked list
-    public IEnumerator<int> GetEnumerator() {
-        var curr = _head;
-        while (curr is not null) {
-            yield return curr.Data;
-            curr = curr.Next;
-        }
-    }
-
-    // Iterate backward through the Linked List
-    public IEnumerable<int> Reverse() {
-        var curr = _tail;
-        while (curr is not null) {
-            yield return curr.Data;
-            curr = curr.Prev;
-        }
-    }
-
-    public override string ToString() {
-        return "<LinkedList>{" + string.Join(", ", this) + "}";
-    }
-
-    // Just for testing.
-    public bool HeadAndTailAreNull() {
-        return _head is null && _tail is null;
-    }
-
-    // Just for testing.
-    public bool HeadAndTailAreNotNull() {
-        return _head is not null && _tail is not null;
     }
 }
