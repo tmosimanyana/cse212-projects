@@ -54,13 +54,15 @@ public class LinkedList : IEnumerable<int> {
     /// Remove the last node (i.e. the tail) of the linked list.
     /// </summary>
     public void RemoveTail() {
-        if (_tail is null) return;
+        if (_tail is null) return; // List is empty
 
         if (_head == _tail) {
+            // List has only one item
             _head = null;
             _tail = null;
         }
         else {
+            // List has more than one item
             _tail = _tail.Prev;
             _tail!.Next = null;
         }
