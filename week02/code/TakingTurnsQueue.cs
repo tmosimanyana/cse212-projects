@@ -3,19 +3,30 @@ using System.Collections.Generic;
 
 internal class Program
 {
-    private static Queue<Person> _people = new Queue<Person>(); // Correctly declare a queue to hold people
+    private static Queue<Person> _people = new Queue<Person>();
 
     private static void Main(string[] args)
     {
-        // Example usage of the queue
-        // Add persons to the queue
+        // Sample data
+        InitializeQueue();
+
+        // Process people in the queue
+        ProcessQueue();
+    }
+
+    private static void InitializeQueue()
+    {
         _people.Enqueue(new Person { Name = "Alice", Turns = 2 });
         _people.Enqueue(new Person { Name = "Bob", Turns = 1 });
-        
-        // Process people in the queue
+        _people.Enqueue(new Person { Name = "Charlie", Turns = 0 }); // This person will stay in the queue indefinitely
+    }
+
+    private static void ProcessQueue()
+    {
         try
         {
-            for (int i = 0; i < 3; i++)
+            // Process a number of turns or until the queue is empty
+            for (int i = 0; i < 5; i++) // Process 5 times for demonstration
             {
                 var person = GetNextPerson();
                 Console.WriteLine($"{person.Name} has {person.Turns} turns left.");
@@ -46,13 +57,13 @@ internal class Program
             {
                 _people.Enqueue(person);
             }
-            // If Turns is exactly 0 after decrementing, do not enqueue them again.
         }
+        // If Turns is 0, they stay in the queue indefinitely.
         else
         {
-            // If turns are 0 or less, they stay in the queue forever.
-            // This line allows the person to remain in the queue for future processing.
-            _people.Enqueue(person);
+            // You can choose to log or handle the situation where a person has 0 turns differently.
+            Console.WriteLine($"{person.Name} has no turns left and will remain in the queue.");
+            _people.Enqueue(person); // Optional: could choose to remove them instead.
         }
 
         return person; // Return the processed person
