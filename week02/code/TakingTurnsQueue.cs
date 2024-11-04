@@ -1,77 +1,61 @@
 using System;
 using System.Collections.Generic;
 
-internal class Program
+public class Person
 {
-    private static Queue<Person> _people = new Queue<Person>();
+    public string Name { get; set; }
+    public int Turns { get; set; }
 
-    private static void Main(string[] args)
+    public Person(string name, int turns)
     {
-        // Sample data
-        InitializeQueue();
-
-        // Process people in the queue
-        ProcessQueue();
+        Name = name;
+        Turns = turns;
     }
+}
 
-    private static void InitializeQueue()
-    {
-        // Enqueue sample people with their respective turns
-        _people.Enqueue(new Person { Name = "Alice", Turns = 2 });
-        _people.Enqueue(new Person { Name = "Bob", Turns = 1 });
-        _people.Enqueue(new Person { Name = "Charlie", Turns = 0 }); // This person will stay in the queue indefinitely
-    }
+public class TakingTurnsQueue
+{
+    private Queue<Person> _queue = new Queue<Person>();
 
-    private static void ProcessQueue()
+    public int Length => _queue.Count;
+
+    public void AddPerson(string name, int turns)
     {
-        try
+        // Treat negative or zero turns as "infinite" turns
+        if (turns <= 0)
         {
-            // Process a number of turns or until the queue is empty
-            for (int i = 0; i < 5; i++) // Process 5 times for demonstration
-            {
-                var person = GetNextPerson();
-                Console.WriteLine($"{person.Name} has {person.Turns} turns left.");
-            }
+            turns = int.MaxValue; // Use a large number to represent infinite turns
         }
-        catch (InvalidOperationException ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
+        
+        _queue.Enqueue(new Person(name, turns));
     }
 
-    public static Person GetNextPerson()
+    public Person GetNextPerson()
     {
-        if (_people.Count == 0) // Check if the queue is empty
+        if (_queue.Count == 0)
         {
             throw new InvalidOperationException("No one in the queue.");
         }
 
-        Person person = _people.Dequeue(); // Dequeue the next person
+        Person currentPerson = _queue.Dequeue(); // Get the next person in the queue
 
-        // Handle turns
-        if (person.Turns > 0)
+        // Decrement their turns (if not infinite)
+        if (currentPerson.Turns != int.MaxValue)
         {
-            person.Turns -= 1; // Decrement the turns
+            currentPerson.Turns--;
 
-            // Enqueue again if they still have turns left after decrementing
-            if (person.Turns > 0)
+            // If they still have turns left, add them back to the queue
+            if (currentPerson.Turns > 0)
             {
-                _people.Enqueue(person);
+                _queue.Enqueue(currentPerson);
             }
         }
         else
         {
-            // If Turns is 0, they stay in the queue indefinitely.
-            Console.WriteLine($"{person.Name} has no turns left and will remain in the queue indefinitely.");
-            _people.Enqueue(person); // Re-enqueue since they will remain indefinitely
+            // If the person has infinite turns, simply re-add them to the queue
+            _queue.Enqueue(currentPerson);
         }
 
-        return person; // Return the processed person
+        return currentPerson;
     }
-}
-
-internal class Person
-{
-    public string Name { get; set; }
-    public int Turns { get; set; } // Property to hold the number of turns
 }
