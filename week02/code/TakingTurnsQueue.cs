@@ -16,6 +16,7 @@ internal class Program
 
     private static void InitializeQueue()
     {
+        // Enqueue sample people with their respective turns
         _people.Enqueue(new Person { Name = "Alice", Turns = 2 });
         _people.Enqueue(new Person { Name = "Bob", Turns = 1 });
         _people.Enqueue(new Person { Name = "Charlie", Turns = 0 }); // This person will stay in the queue indefinitely
@@ -58,12 +59,11 @@ internal class Program
                 _people.Enqueue(person);
             }
         }
-        // If Turns is 0, they stay in the queue indefinitely.
         else
         {
-            // You can choose to log or handle the situation where a person has 0 turns differently.
-            Console.WriteLine($"{person.Name} has no turns left and will remain in the queue.");
-            _people.Enqueue(person); // Optional: could choose to remove them instead.
+            // If Turns is 0, they stay in the queue indefinitely.
+            Console.WriteLine($"{person.Name} has no turns left and will remain in the queue indefinitely.");
+            _people.Enqueue(person); // Re-enqueue since they will remain indefinitely
         }
 
         return person; // Return the processed person
