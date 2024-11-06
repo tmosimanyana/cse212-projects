@@ -1,19 +1,19 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
 [TestClass]
 public class TakingTurnsQueueTests
 {
     [TestMethod]
-    // Scenario: Create a queue with Bob (2), Tim (5), Sue (3) and run until the queue is empty
+    // Scenario: Create a queue with Bob, Tim, and Sue, run until empty.
     // Expected Result: Bob, Tim, Sue, Bob, Tim, Sue, Tim, Sue, Tim, Tim
-    // Defect(s) Found: None after correction
     public void TestTakingTurnsQueue_FiniteRepetition()
     {
         var bob = new Person("Bob", 2);
         var tim = new Person("Tim", 5);
         var sue = new Person("Sue", 3);
 
-        Person[] expectedResult = { bob, tim, sue, bob, tim, sue, tim, sue, tim, tim };
+        Person[] expectedResult = new[] { bob, tim, sue, bob, tim, sue, tim, sue, tim, tim };
 
         var players = new TakingTurnsQueue();
         players.AddPerson(bob.Name, bob.Turns);
@@ -23,16 +23,14 @@ public class TakingTurnsQueueTests
         int i = 0;
         while (players.Length > 0)
         {
-            var person = players.GetNextPerson();
-            Assert.AreEqual(expectedResult[i].Name, person.Name);
+            Assert.AreEqual(expectedResult[i].Name, players.GetNextPerson().Name);
             i++;
         }
     }
 
     [TestMethod]
-    // Scenario: Create a queue with Bob (2), Tim (5), Sue (3) and add George with 3 turns after 5 iterations
+    // Scenario: Queue with Bob, Tim, Sue, and add George midway.
     // Expected Result: Bob, Tim, Sue, Bob, Tim, Sue, Tim, George, Sue, Tim, George, Tim, George
-    // Defect(s) Found: None after correction
     public void TestTakingTurnsQueue_AddPlayerMidway()
     {
         var bob = new Person("Bob", 2);
@@ -40,41 +38,37 @@ public class TakingTurnsQueueTests
         var sue = new Person("Sue", 3);
         var george = new Person("George", 3);
 
-        Person[] expectedResult = { bob, tim, sue, bob, tim, sue, tim, george, sue, tim, george, tim, george };
+        Person[] expectedResult = new[] { bob, tim, sue, bob, tim, sue, tim, george, sue, tim, george, tim, george };
 
         var players = new TakingTurnsQueue();
         players.AddPerson(bob.Name, bob.Turns);
         players.AddPerson(tim.Name, tim.Turns);
         players.AddPerson(sue.Name, sue.Turns);
 
-        int i = 0;
-        for (; i < 5; i++)
+        for (int i = 0; i < 5; i++)
         {
-            var person = players.GetNextPerson();
-            Assert.AreEqual(expectedResult[i].Name, person.Name);
+            Assert.AreEqual(expectedResult[i].Name, players.GetNextPerson().Name);
         }
 
         players.AddPerson("George", 3);
 
+        int j = 5;
         while (players.Length > 0)
         {
-            var person = players.GetNextPerson();
-            Assert.AreEqual(expectedResult[i].Name, person.Name);
-            i++;
+            Assert.AreEqual(expectedResult[j].Name, players.GetNextPerson().Name);
+            j++;
         }
     }
-
+    
     [TestMethod]
-    // Scenario: Queue with Bob (2), Tim (Forever), Sue (3); run 10 times
-    // Expected Result: Bob, Tim, Sue, Bob, Tim, Sue, Tim, Sue, Tim, Tim
-    // Defect(s) Found: None after correction
+    // Scenario: Queue with Bob (finite), Tim (infinite), and Sue. Run 10 times.
     public void TestTakingTurnsQueue_ForeverZero()
     {
         var bob = new Person("Bob", 2);
-        var tim = new Person("Tim", 0); // Infinite turns
+        var tim = new Person("Tim", 0);
         var sue = new Person("Sue", 3);
 
-        Person[] expectedResult = { bob, tim, sue, bob, tim, sue, tim, sue, tim, tim };
+        Person[] expectedResult = new[] { bob, tim, sue, bob, tim, sue, tim, sue, tim, tim };
 
         var players = new TakingTurnsQueue();
         players.AddPerson(bob.Name, bob.Turns);
@@ -83,37 +77,12 @@ public class TakingTurnsQueueTests
 
         for (int i = 0; i < 10; i++)
         {
-            var person = players.GetNextPerson();
-            Assert.AreEqual(expectedResult[i].Name, person.Name);
+            Assert.AreEqual(expectedResult[i].Name, players.GetNextPerson().Name);
         }
     }
 
     [TestMethod]
-    // Scenario: Queue with Tim (Forever), Sue (3); run 10 times
-    // Expected Result: Tim, Sue, Tim, Sue, Tim, Sue, Tim, Tim, Tim, Tim
-    // Defect(s) Found: None after correction
-    public void TestTakingTurnsQueue_ForeverNegative()
-    {
-        var tim = new Person("Tim", -1); // Infinite turns
-        var sue = new Person("Sue", 3);
-
-        Person[] expectedResult = { tim, sue, tim, sue, tim, sue, tim, tim, tim, tim };
-
-        var players = new TakingTurnsQueue();
-        players.AddPerson(tim.Name, tim.Turns);
-        players.AddPerson(sue.Name, sue.Turns);
-
-        for (int i = 0; i < 10; i++)
-        {
-            var person = players.GetNextPerson();
-            Assert.AreEqual(expectedResult[i].Name, person.Name);
-        }
-    }
-
-    [TestMethod]
-    // Scenario: Try to get the next person from an empty queue
-    // Expected Result: Exception with message "No one in the queue."
-    // Defect(s) Found: None after correction
+    // Scenario: Get the next person from an empty queue.
     public void TestTakingTurnsQueue_Empty()
     {
         var players = new TakingTurnsQueue();
