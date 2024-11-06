@@ -15,43 +15,35 @@ public class Person
 
 public class TakingTurnsQueue
 {
-    private Queue<Person> queue;
+    private Queue<Person> queue = new Queue<Person>();
 
-    public TakingTurnsQueue()
-    {
-        queue = new Queue<Person>();
-    }
+    public int Length => queue.Count;
 
-    // Adds a person to the queue with a given name and turn count.
     public void AddPerson(string name, int turns)
     {
-        var person = new Person(name, turns);
-        queue.Enqueue(person);
+        queue.Enqueue(new Person(name, turns));
     }
 
-    // Returns the next person in line, re-adding them if they have remaining turns.
     public Person GetNextPerson()
     {
         if (queue.Count == 0)
-            throw new InvalidOperationException("No one in the queue.");
+        {
+            throw new InvalidOperationException("The queue is empty.");
+        }
 
         var person = queue.Dequeue();
-
-        // Handle infinite turns (<= 0 means infinite).
-        if (person.Turns <= 0)
+        
+        if (person.Turns > 0)
         {
-            queue.Enqueue(person); // Re-add person with infinite turns to the end of the queue
+            person.Turns--;  // Decrease the number of turns if finite
         }
-        else if (person.Turns > 1)
+
+        if (person.Turns >= 0) // Re-enqueue if the person still has turns (including infinite turns)
         {
-            person.Turns--; // Decrease turns and re-add if more turns are left
             queue.Enqueue(person);
         }
-        // If Turns == 1, do not re-add person, as they have no turns left after this
 
         return person;
     }
-
-    // Property to get the current length of the queue.
-    public int Length => queue.Count;
 }
+
