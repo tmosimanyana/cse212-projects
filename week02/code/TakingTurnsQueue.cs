@@ -1,19 +1,37 @@
 using System;
 using System.Collections.Generic;
 
+public class Person
+{
+    public string Name { get; set; }
+    public int Turns { get; set; }
+
+    public Person(string name, int turns)
+    {
+        Name = name;
+        Turns = turns;
+    }
+
+    public override string ToString()
+    {
+        return Turns <= 0 ? $"({Name}:Forever)" : $"({Name}:{Turns})";
+    }
+}
+
 public class TakingTurnsQueue
 {
-    private Queue<Person> queue = new Queue<Person>();
+    private Queue<Person> queue;
 
-    public int Length => queue.Count;
+    public TakingTurnsQueue()
+    {
+        queue = new Queue<Person>();
+    }
 
-    // Add person to the queue
     public void AddPerson(string name, int turns)
     {
         queue.Enqueue(new Person(name, turns));
     }
 
-    // Get the next person from the queue and update their turn count
     public Person GetNextPerson()
     {
         if (queue.Count == 0)
@@ -21,12 +39,20 @@ public class TakingTurnsQueue
 
         var person = queue.Dequeue();
 
+        // If they still have turns or infinite turns, re-enqueue them.
         if (person.Turns > 0)
         {
             person.Turns--;
-            queue.Enqueue(person); // Re-enqueue if they still have turns left
+            queue.Enqueue(person);
+        }
+        else if (person.Turns <= 0)
+        {
+            // They have infinite turns, re-enqueue without modifying turns.
+            queue.Enqueue(person);
         }
 
         return person;
     }
+
+    public int Length => queue.Count;
 }

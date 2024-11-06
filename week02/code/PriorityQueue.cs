@@ -16,34 +16,27 @@ public class PriorityQueueItem<T>
 
 public class PriorityQueue<T>
 {
-    private List<PriorityQueueItem<T>> queue;
+    private List<PriorityQueueItem<T>> queue = new List<PriorityQueueItem<T>>();
 
-    public PriorityQueue()
-    {
-        queue = new List<PriorityQueueItem<T>>();
-    }
-
-    // Adds an item to the queue based on priority
+    // Enqueue an item with a specific priority
     public void Enqueue(T data, int priority)
     {
-        var item = new PriorityQueueItem<T>(data, priority);
-        queue.Add(item);
+        queue.Add(new PriorityQueueItem<T>(data, priority));
     }
 
-    // Removes and returns the item with the highest priority, following FIFO for ties
+    // Dequeue the item with the highest priority, FIFO for ties
     public T Dequeue()
     {
         if (queue.Count == 0)
             throw new InvalidOperationException("The queue is empty.");
 
-        // Find the item with the highest priority
-        int maxPriority = queue.Max(x => x.Priority);
-        var item = queue.First(x => x.Priority == maxPriority);
-        queue.Remove(item);
+        var highestPriorityItem = queue.OrderByDescending(x => x.Priority)
+                                        .ThenBy(x => queue.IndexOf(x))
+                                        .First();
 
-        return item.Data;
+        queue.Remove(highestPriorityItem);
+        return highestPriorityItem.Data;
     }
 
-    // Property to get the current length of the queue
     public int Length => queue.Count;
 }

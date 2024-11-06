@@ -2,9 +2,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
 [TestClass]
-public class TakingTurnsQueueTests
+public class TakingTurnsQueue_Tests
 {
     [TestMethod]
+    // Test Scenario: Run until queue is empty.
+    // Expected result: Bob, Tim, Sue, Bob, Tim, Sue, Tim, Sue, Tim, Tim
     public void TestTakingTurnsQueue_FiniteRepetition()
     {
         var bob = new Person("Bob", 2);
@@ -27,6 +29,8 @@ public class TakingTurnsQueueTests
     }
 
     [TestMethod]
+    // Test Scenario: Adding George midway through the queue.
+    // Expected result: Bob, Tim, Sue, Bob, Tim, Sue, Tim, George, Sue, Tim, George, Tim, George
     public void TestTakingTurnsQueue_AddPlayerMidway()
     {
         var bob = new Person("Bob", 2);
@@ -57,10 +61,12 @@ public class TakingTurnsQueueTests
     }
 
     [TestMethod]
+    // Test Scenario: Tim has infinite turns, and the others have finite turns.
+    // Expected result: Bob, Tim, Sue, Bob, Tim, Sue, Tim, Sue, Tim, Tim
     public void TestTakingTurnsQueue_ForeverZero()
     {
         var bob = new Person("Bob", 2);
-        var tim = new Person("Tim", 0);
+        var tim = new Person("Tim", 0);  // Infinite turns
         var sue = new Person("Sue", 3);
 
         Person[] expectedResult = new[] { bob, tim, sue, bob, tim, sue, tim, sue, tim, tim };
@@ -77,9 +83,11 @@ public class TakingTurnsQueueTests
     }
 
     [TestMethod]
+    // Test Scenario: Handle empty queue.
+    [ExpectedException(typeof(InvalidOperationException))]
     public void TestTakingTurnsQueue_Empty()
     {
         var players = new TakingTurnsQueue();
-        Assert.ThrowsException<InvalidOperationException>(() => players.GetNextPerson());
+        players.GetNextPerson(); // Should throw exception as queue is empty
     }
 }
