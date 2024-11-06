@@ -1,4 +1,17 @@
-using System.Diagnostics;
+using System;
+using System.Collections.Generic;
+
+public class Person
+{
+    public string Name { get; set; }
+    public int Turns { get; set; }
+
+    public Person(string name, int turns)
+    {
+        Name = name;
+        Turns = turns;
+    }
+}
 
 public class TakingTurnsQueue
 {
@@ -9,39 +22,36 @@ public class TakingTurnsQueue
         queue = new Queue<Person>();
     }
 
+    // Adds a person to the queue with a given name and turn count.
     public void AddPerson(string name, int turns)
     {
         var person = new Person(name, turns);
-        Debug.WriteLine($"Added {person.Name} with {person.Turns} turns.");
         queue.Enqueue(person);
     }
 
+    // Returns the next person in line, re-adding them if they have remaining turns.
     public Person GetNextPerson()
     {
         if (queue.Count == 0)
             throw new InvalidOperationException("No one in the queue.");
 
         var person = queue.Dequeue();
-        Debug.WriteLine($"Processing {person.Name} with {person.Turns} turns.");
 
+        // Handle infinite turns (<= 0 means infinite).
         if (person.Turns <= 0)
         {
-            queue.Enqueue(person);
-            Debug.WriteLine($"{person.Name} has infinite turns, re-added to queue.");
+            queue.Enqueue(person); // Re-add person with infinite turns to the end of the queue
         }
         else if (person.Turns > 1)
         {
-            person.Turns--;
+            person.Turns--; // Decrease turns and re-add if more turns are left
             queue.Enqueue(person);
-            Debug.WriteLine($"{person.Name} has {person.Turns} turns remaining, re-added to queue.");
         }
-        else
-        {
-            Debug.WriteLine($"{person.Name} has no remaining turns, not re-added.");
-        }
+        // If Turns == 1, do not re-add person, as they have no turns left after this
 
         return person;
     }
 
+    // Property to get the current length of the queue.
     public int Length => queue.Count;
 }
