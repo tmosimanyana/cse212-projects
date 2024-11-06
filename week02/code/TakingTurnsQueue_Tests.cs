@@ -1,12 +1,9 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 
 [TestClass]
 public class TakingTurnsQueueTests
 {
     [TestMethod]
-    // Scenario: Create a queue with Bob, Tim, and Sue, run until empty.
-    // Expected Result: Bob, Tim, Sue, Bob, Tim, Sue, Tim, Sue, Tim, Tim
     public void TestTakingTurnsQueue_FiniteRepetition()
     {
         var bob = new Person("Bob", 2);
@@ -29,8 +26,6 @@ public class TakingTurnsQueueTests
     }
 
     [TestMethod]
-    // Scenario: Queue with Bob, Tim, Sue, and add George midway.
-    // Expected Result: Bob, Tim, Sue, Bob, Tim, Sue, Tim, George, Sue, Tim, George, Tim, George
     public void TestTakingTurnsQueue_AddPlayerMidway()
     {
         var bob = new Person("Bob", 2);
@@ -59,13 +54,12 @@ public class TakingTurnsQueueTests
             j++;
         }
     }
-    
+
     [TestMethod]
-    // Scenario: Queue with Bob (finite), Tim (infinite), and Sue. Run 10 times.
     public void TestTakingTurnsQueue_ForeverZero()
     {
         var bob = new Person("Bob", 2);
-        var tim = new Person("Tim", 0);
+        var tim = new Person("Tim", 0);  // Tim will have infinite turns
         var sue = new Person("Sue", 3);
 
         Person[] expectedResult = new[] { bob, tim, sue, bob, tim, sue, tim, sue, tim, tim };
@@ -82,7 +76,6 @@ public class TakingTurnsQueueTests
     }
 
     [TestMethod]
-    // Scenario: Get the next person from an empty queue.
     public void TestTakingTurnsQueue_Empty()
     {
         var players = new TakingTurnsQueue();

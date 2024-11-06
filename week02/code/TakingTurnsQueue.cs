@@ -1,49 +1,37 @@
 using System;
 using System.Collections.Generic;
 
-public class Person
-{
-    public string Name { get; set; }
-    public int Turns { get; set; }
-
-    public Person(string name, int turns)
-    {
-        Name = name;
-        Turns = turns;
-    }
-}
-
 public class TakingTurnsQueue
 {
     private Queue<Person> queue = new Queue<Person>();
 
+    // Property to get the current length of the queue
     public int Length => queue.Count;
 
+    // Adds a person to the queue
     public void AddPerson(string name, int turns)
     {
         queue.Enqueue(new Person(name, turns));
     }
 
+    // Gets the next person in line based on turns
     public Person GetNextPerson()
     {
         if (queue.Count == 0)
-        {
             throw new InvalidOperationException("The queue is empty.");
-        }
 
-        var person = queue.Dequeue();
-        
+        var person = queue.Dequeue();  // Get the next person in line
+
         if (person.Turns > 0)
         {
-            person.Turns--;  // Decrease the number of turns if finite
+            person.Turns--;  // Decrease turns if it's finite
+            queue.Enqueue(person);  // Put them back in the queue if they still have turns left
         }
-
-        if (person.Turns >= 0) // Re-enqueue if the person still has turns (including infinite turns)
+        else
         {
-            queue.Enqueue(person);
+            queue.Enqueue(person);  // Re-enqueue if they have infinite turns
         }
 
         return person;
     }
 }
-
