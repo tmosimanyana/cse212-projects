@@ -1,10 +1,10 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
 [TestClass]
 public class PriorityQueueTests
 {
     [TestMethod]
-    // Scenario: Basic priority enqueue and dequeue.
     public void TestPriorityQueue_BasicPriority()
     {
         var queue = new PriorityQueue<string>();
@@ -18,7 +18,6 @@ public class PriorityQueueTests
     }
 
     [TestMethod]
-    // Scenario: Same priority should follow FIFO.
     public void TestPriorityQueue_SamePriorityFIFO()
     {
         var queue = new PriorityQueue<string>();
@@ -32,7 +31,6 @@ public class PriorityQueueTests
     }
 
     [TestMethod]
-    // Scenario: Dequeue from an empty queue should throw exception.
     public void TestPriorityQueue_EmptyQueueException()
     {
         var queue = new PriorityQueue<string>();

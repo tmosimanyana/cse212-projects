@@ -1,4 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
 [TestClass]
 public class TakingTurnsQueueTests
@@ -59,7 +60,7 @@ public class TakingTurnsQueueTests
     public void TestTakingTurnsQueue_ForeverZero()
     {
         var bob = new Person("Bob", 2);
-        var tim = new Person("Tim", 0);  // Tim will have infinite turns
+        var tim = new Person("Tim", 0);
         var sue = new Person("Sue", 3);
 
         Person[] expectedResult = new[] { bob, tim, sue, bob, tim, sue, tim, sue, tim, tim };
@@ -79,7 +80,6 @@ public class TakingTurnsQueueTests
     public void TestTakingTurnsQueue_Empty()
     {
         var players = new TakingTurnsQueue();
-
         Assert.ThrowsException<InvalidOperationException>(() => players.GetNextPerson());
     }
 }

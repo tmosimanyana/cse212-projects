@@ -5,31 +5,26 @@ public class TakingTurnsQueue
 {
     private Queue<Person> queue = new Queue<Person>();
 
-    // Property to get the current length of the queue
     public int Length => queue.Count;
 
-    // Adds a person to the queue
+    // Add person to the queue
     public void AddPerson(string name, int turns)
     {
         queue.Enqueue(new Person(name, turns));
     }
 
-    // Gets the next person in line based on turns
+    // Get the next person from the queue and update their turn count
     public Person GetNextPerson()
     {
         if (queue.Count == 0)
             throw new InvalidOperationException("The queue is empty.");
 
-        var person = queue.Dequeue();  // Get the next person in line
+        var person = queue.Dequeue();
 
         if (person.Turns > 0)
         {
-            person.Turns--;  // Decrease turns if it's finite
-            queue.Enqueue(person);  // Put them back in the queue if they still have turns left
-        }
-        else
-        {
-            queue.Enqueue(person);  // Re-enqueue if they have infinite turns
+            person.Turns--;
+            queue.Enqueue(person); // Re-enqueue if they still have turns left
         }
 
         return person;
