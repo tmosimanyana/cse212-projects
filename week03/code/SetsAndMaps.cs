@@ -54,15 +54,55 @@ public static class SetsAndMaps
 
                 if (degrees.ContainsKey(degree))
                 {
-                    degrees[degree]++;
+                    degrees[degree]++; // Increment if the degree is already in the dictionary
                 }
                 else
                 {
-                    degrees[degree] = 1;
+                    degrees[degree] = 1; // Add the degree with count 1
                 }
             }
         }
 
         return degrees;
+    }
+
+    /// <summary>
+    /// Determines if two words are anagrams. Ignores spaces and letter case.
+    /// </summary>
+    /// <param name="word1">First word</param>
+    /// <param name="word2">Second word</param>
+    /// <returns>True if the words are anagrams, false otherwise</returns>
+    public static bool IsAnagram(string word1, string word2)
+    {
+        // Normalize words: remove spaces and convert to lowercase
+        word1 = word1.Replace(" ", "").ToLower();
+        word2 = word2.Replace(" ", "").ToLower();
+
+        // If lengths differ, they can't be anagrams
+        if (word1.Length != word2.Length)
+            return false;
+
+        // Create dictionaries to count letter frequencies
+        var letterCount1 = new Dictionary<char, int>();
+        var letterCount2 = new Dictionary<char, int>();
+
+        foreach (var c in word1)
+        {
+            if (letterCount1.ContainsKey(c))
+                letterCount1[c]++;
+            else
+                letterCount1[c] = 1;
+        }
+
+        foreach (var c in word2)
+        {
+            if (letterCount2.ContainsKey(c))
+                letterCount2[c]++;
+            else
+                letterCount2[c] = 1;
+        }
+
+        // Compare the dictionaries
+        return letterCount1.SequenceEqual(letterCount2);
     }
 }
