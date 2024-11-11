@@ -174,10 +174,14 @@ class Program
             { 0, 0, 0, 1, 2 },
         };
 
+        // Create a maze object
         MazeSolver.Maze maze = new MazeSolver.Maze(mazeArray);
+        
+        // Solve the maze recursively and collect results
         List<string> paths = new List<string>();
         RecursionSolver.Recursion.SolveMaze(paths, maze);
 
+        // Print all possible paths
         Console.WriteLine("Possible paths:");
         foreach (var path in paths)
         {
