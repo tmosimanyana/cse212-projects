@@ -9,9 +9,14 @@ public class Node
         this.Data = data;
     }
 
+    // Problem 1: Insert Unique Values Only
     public void Insert(int value)
     {
-        // TODO Start Problem 1
+        if (value == Data)
+        {
+            // Prevent duplicates; do nothing if the value already exists
+            return;
+        }
 
         if (value < Data)
         {
@@ -21,7 +26,7 @@ public class Node
             else
                 Left.Insert(value);
         }
-        else
+        else // value > Data ensures uniqueness
         {
             // Insert to the right
             if (Right is null)
@@ -31,15 +36,25 @@ public class Node
         }
     }
 
+    // Problem 2: Contains
     public bool Contains(int value)
     {
-        // TODO Start Problem 2
-        return false;
+        if (value == Data)
+            return true; // Found the value
+
+        if (value < Data)
+            return Left != null && Left.Contains(value); // Search in the left subtree
+
+        return Right != null && Right.Contains(value); // Search in the right subtree
     }
 
+    // Problem 4: Get the Height of the Tree
     public int GetHeight()
     {
-        // TODO Start Problem 4
-        return 0; // Replace this line with the correct return statement(s)
+        int leftHeight = Left?.GetHeight() ?? 0;
+        int rightHeight = Right?.GetHeight() ?? 0;
+
+        // Height is 1 + the maximum height of either subtree
+        return 1 + Math.Max(leftHeight, rightHeight);
     }
 }
