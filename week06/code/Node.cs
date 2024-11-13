@@ -9,15 +9,9 @@ public class Node
         this.Data = data;
     }
 
-    // Problem 1: Insert Unique Values Only
     public void Insert(int value)
     {
-        if (value == Data)
-        {
-            // Prevent duplicates; do nothing if the value already exists
-            return;
-        }
-
+        // Insert unique values only (Problem 1)
         if (value < Data)
         {
             // Insert to the left
@@ -26,7 +20,7 @@ public class Node
             else
                 Left.Insert(value);
         }
-        else // value > Data ensures uniqueness
+        else if (value > Data)
         {
             // Insert to the right
             if (Right is null)
@@ -34,27 +28,24 @@ public class Node
             else
                 Right.Insert(value);
         }
+        // If the value is equal to Data, do nothing to ensure unique values (sorted set)
     }
 
-    // Problem 2: Contains
     public bool Contains(int value)
     {
-        if (value == Data)
-            return true; // Found the value
-
+        // Problem 2: Recursively check if the value is in the tree
         if (value < Data)
-            return Left != null && Left.Contains(value); // Search in the left subtree
-
-        return Right != null && Right.Contains(value); // Search in the right subtree
+            return Left?.Contains(value) ?? false;
+        if (value > Data)
+            return Right?.Contains(value) ?? false;
+        return true;  // The value matches the node
     }
 
-    // Problem 4: Get the Height of the Tree
     public int GetHeight()
     {
+        // Problem 4: Get the height of the node in the tree
         int leftHeight = Left?.GetHeight() ?? 0;
         int rightHeight = Right?.GetHeight() ?? 0;
-
-        // Height is 1 + the maximum height of either subtree
         return 1 + Math.Max(leftHeight, rightHeight);
     }
 }
