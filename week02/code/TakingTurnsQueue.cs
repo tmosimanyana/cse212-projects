@@ -3,18 +3,6 @@ using System.Collections.Generic;
 
 public class TakingTurnsQueue
 {
-    private class Person
-    {
-        public string Name { get; }
-        public int Turns { get; set; }
-
-        public Person(string name, int turns)
-        {
-            Name = name;
-            Turns = turns;
-        }
-    }
-
     private readonly Queue<Person> _queue = new();
 
     public void AddPerson(string name, int turns)
@@ -22,7 +10,7 @@ public class TakingTurnsQueue
         _queue.Enqueue(new Person(name, turns));
     }
 
-    public string GetNextPerson()
+    public Person GetNextPerson()
     {
         if (_queue.Count == 0)
             throw new InvalidOperationException("The queue is empty.");
@@ -39,6 +27,8 @@ public class TakingTurnsQueue
             _queue.Enqueue(person);
         }
 
-        return person.Name;
+        return person;
     }
+
+    public int Length => _queue.Count;
 }

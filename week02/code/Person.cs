@@ -9,7 +9,6 @@ public class Person
         Turns = turns;
     }
 
-    // Overriding ToString for better test output
     public override string ToString()
     {
         return Turns <= 0 ? $"({Name}:Forever)" : $"({Name}:{Turns})";
