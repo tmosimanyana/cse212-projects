@@ -1,8 +1,17 @@
-using System;
-using System.Collections.Generic;
-
 public class TakingTurnsQueue
 {
+    private class Person
+    {
+        public string Name { get; }
+        public int Turns { get; set; }
+
+        public Person(string name, int turns)
+        {
+            Name = name;
+            Turns = turns;
+        }
+    }
+
     private readonly Queue<Person> _queue = new();
 
     public void AddPerson(string name, int turns)
@@ -22,7 +31,7 @@ public class TakingTurnsQueue
             person.Turns--;
             _queue.Enqueue(person);
         }
-        else if (person.Turns <= 0) // Infinite turns
+        else if (person.Turns == 0) // Infinite turns
         {
             _queue.Enqueue(person);
         }
@@ -32,3 +41,4 @@ public class TakingTurnsQueue
 
     public int Length => _queue.Count;
 }
+
