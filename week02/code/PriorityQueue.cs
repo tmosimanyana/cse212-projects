@@ -2,41 +2,36 @@
 using System.Collections.Generic;
 using System.Linq;
 
-public class PriorityQueueItem<T>
+public class PriorityQueue
 {
-    public T Data { get; set; }
-    public int Priority { get; set; }
-
-    public PriorityQueueItem(T data, int priority)
+    private class QueueItem
     {
-        Data = data;
-        Priority = priority;
-    }
-}
+        public string Value { get; }
+        public int Priority { get; }
 
-public class PriorityQueue<T>
-{
-    private List<PriorityQueueItem<T>> queue = new List<PriorityQueueItem<T>>();
-
-    // Enqueue an item with a specific priority
-    public void Enqueue(T data, int priority)
-    {
-        queue.Add(new PriorityQueueItem<T>(data, priority));
+        public QueueItem(string value, int priority)
+        {
+            Value = value;
+            Priority = priority;
+        }
     }
 
-    // Dequeue the item with the highest priority, FIFO for ties
-    public T Dequeue()
+    private readonly List<QueueItem> _queue = new();
+
+    public void Enqueue(string value, int priority)
     {
-        if (queue.Count == 0)
+        _queue.Add(new QueueItem(value, priority));
+    }
+
+    public string Dequeue()
+    {
+        if (_queue.Count == 0)
             throw new InvalidOperationException("The queue is empty.");
 
-        var highestPriorityItem = queue.OrderByDescending(x => x.Priority)
-                                        .ThenBy(x => queue.IndexOf(x))
-                                        .First();
+        var highestPriority = _queue.Max(item => item.Priority);
+        var itemToDequeue = _queue.First(item => item.Priority == highestPriority);
 
-        queue.Remove(highestPriorityItem);
-        return highestPriorityItem.Data;
+        _queue.Remove(itemToDequeue);
+        return itemToDequeue.Value;
     }
-
-    public int Length => queue.Count;
 }
