@@ -1,16 +1,19 @@
-public class Person
+namespace YourNamespace
 {
-    public string Name { get; }
-    public int Turns { get; }
-
-    public Person(string name, int turns)
+    public class Person
     {
-        Name = name;
-        Turns = turns;
-    }
+        public string Name { get; }
+        public int Turns { get; }
 
-    public override string ToString()
-    {
-        return Turns <= 0 ? $"({Name}:Forever)" : $"({Name}:{Turns})";
+        public Person(string name, int turns)
+        {
+            Name = name;
+            Turns = turns;
+        }
+
+        public override string ToString()
+        {
+            return Turns <= 0 ? $"({Name}: Forever)" : $"({Name}: {Turns})";
+        }
     }
 }

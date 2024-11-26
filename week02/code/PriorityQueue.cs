@@ -2,40 +2,41 @@
 using System.Collections.Generic;
 using System.Linq;
 
-public class PriorityQueue<T>
+namespace YourNamespace
 {
-    private class QueueItem
+    public class PriorityQueue<T>
     {
-        public T Value { get; }
-        public int Priority { get; }
-
-        public QueueItem(T value, int priority)
+        private class QueueItem
         {
-            Value = value;
-            Priority = priority;
-        }
-    }
+            public T Value { get; }
+            public int Priority { get; }
 
-    private readonly List<QueueItem> queue = new();
-
-    public void Enqueue(T value, int priority)
-    {
-        queue.Add(new QueueItem(value, priority));
-    }
-
-    public T Dequeue()
-    {
-        if (queue.Count == 0)
-        {
-            throw new InvalidOperationException("The queue is empty.");
+            public QueueItem(T value, int priority)
+            {
+                Value = value;
+                Priority = priority;
+            }
         }
 
-        var highestPriority = queue.Max(item => item.Priority);
-        var itemToDequeue = queue.First(item => item.Priority == highestPriority);
+        private List<QueueItem> queue = new();
 
-        queue.Remove(itemToDequeue);
-        return itemToDequeue.Value;
+        public void Enqueue(T value, int priority)
+        {
+            queue.Add(new QueueItem(value, priority));
+        }
+
+        public T Dequeue()
+        {
+            if (queue.Count == 0)
+                throw new InvalidOperationException("The queue is empty.");
+
+            var highestPriority = queue.Max(item => item.Priority);
+            var itemToDequeue = queue.First(item => item.Priority == highestPriority);
+
+            queue.Remove(itemToDequeue);
+            return itemToDequeue.Value;
+        }
+
+        public int Length => queue.Count;
     }
-
-    public int Length => queue.Count;
 }

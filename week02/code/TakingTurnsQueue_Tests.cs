@@ -1,60 +1,89 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
-[TestClass]
-public class TakingTurnsQueue_Tests
+namespace YourNamespace.Tests
 {
-    [TestMethod]
-    public void TestTakingTurnsQueue_FiniteRepetition()
+    [TestClass]
+    public class TakingTurnsQueue_Tests
     {
-        var bob = new Person("Bob", 2);
-        var tim = new Person("Tim", 5);
-        var sue = new Person("Sue", 3);
-
-        string[] expectedResult = { "Bob", "Tim", "Sue", "Bob", "Tim", "Sue", "Tim", "Sue", "Tim", "Tim" };
-
-        var players = new TakingTurnsQueue();
-        players.AddPerson(bob.Name, bob.Turns);
-        players.AddPerson(tim.Name, tim.Turns);
-        players.AddPerson(sue.Name, sue.Turns);
-
-        for (int i = 0; i < expectedResult.Length; i++)
+        [TestMethod]
+        public void TestTakingTurnsQueue_FiniteRepetition()
         {
-            Assert.AreEqual(expectedResult[i], players.GetNextPerson().Name);
-        }
-    }
+            var bob = new Person("Bob", 2);
+            var tim = new Person("Tim", 5);
+            var sue = new Person("Sue", 3);
 
-    [TestMethod]
-    public void TestTakingTurnsQueue_AddPlayerMidway()
-    {
-        var bob = new Person("Bob", 2);
-        var tim = new Person("Tim", 5);
-        var sue = new Person("Sue", 3);
-        var george = new Person("George", 3);
+            Person[] expectedResult = new[] { bob, tim, sue, bob, tim, sue, tim, sue, tim, tim };
 
-        string[] expectedResult = { "Bob", "Tim", "Sue", "Bob", "Tim", "Sue", "Tim", "George", "Sue", "Tim", "George", "Tim", "George" };
+            var players = new TakingTurnsQueue();
+            players.AddPerson(bob.Name, bob.Turns);
+            players.AddPerson(tim.Name, tim.Turns);
+            players.AddPerson(sue.Name, sue.Turns);
 
-        var players = new TakingTurnsQueue();
-        players.AddPerson(bob.Name, bob.Turns);
-        players.AddPerson(tim.Name, tim.Turns);
-        players.AddPerson(sue.Name, sue.Turns);
-
-        for (int i = 0; i < 5; i++)
-        {
-            Assert.AreEqual(expectedResult[i], players.GetNextPerson().Name);
+            int i = 0;
+            while (players.Length > 0)
+            {
+                Assert.AreEqual(expectedResult[i].Name, players.GetNextPerson());
+                i++;
+            }
         }
 
-        players.AddPerson(george.Name, george.Turns);
-
-        for (int i = 5; i < expectedResult.Length; i++)
+        [TestMethod]
+        public void TestTakingTurnsQueue_AddPlayerMidway()
         {
-            Assert.AreEqual(expectedResult[i], players.GetNextPerson().Name);
-        }
-    }
+            var bob = new Person("Bob", 2);
+            var tim = new Person("Tim", 5);
+            var sue = new Person("Sue", 3);
+            var george = new Person("George", 3);
 
-    [TestMethod]
-    public void TestTakingTurnsQueue_EmptyQueue()
-    {
-        var players = new TakingTurnsQueue();
-        Assert.ThrowsException<InvalidOperationException>(() => players.GetNextPerson());
+            Person[] expectedResult = new[] { bob, tim, sue, bob, tim, sue, tim, george, sue, tim, george, tim, george };
+
+            var players = new TakingTurnsQueue();
+            players.AddPerson(bob.Name, bob.Turns);
+            players.AddPerson(tim.Name, tim.Turns);
+            players.AddPerson(sue.Name, sue.Turns);
+
+            for (int i = 0; i < 5; i++)
+            {
+                Assert.AreEqual(expectedResult[i].Name, players.GetNextPerson());
+            }
+
+            players.AddPerson("George", 3);
+
+            int j = 5;
+            while (players.Length > 0)
+            {
+                Assert.AreEqual(expectedResult[j].Name, players.GetNextPerson());
+                j++;
+            }
+        }
+
+        [TestMethod]
+        public void TestTakingTurnsQueue_ForeverZero()
+        {
+            var bob = new Person("Bob", 2);
+            var tim = new Person("Tim", 0);
+            var sue = new Person("Sue", 3);
+
+            Person[] expectedResult = new[] { bob, tim, sue, bob, tim, sue, tim, sue, tim, tim };
+
+            var players = new TakingTurnsQueue();
+            players.AddPerson(bob.Name, bob.Turns);
+            players.AddPerson(tim.Name, tim.Turns);
+            players.AddPerson(sue.Name, sue.Turns);
+
+            for (int i = 0; i < 10; i++)
+            {
+                Assert.AreEqual(expectedResult[i].Name, players.GetNextPerson());
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void TestTakingTurnsQueue_Empty()
+        {
+            var players = new TakingTurnsQueue();
+            players.GetNextPerson();
+        }
     }
 }

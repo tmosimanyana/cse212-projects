@@ -1,32 +1,33 @@
 using System;
 using System.Collections.Generic;
 
-public class TakingTurnsQueue
+namespace YourNamespace
 {
-    private Queue<(string Name, int Turns)> queue = new();
-
-    public int Length => queue.Count;
-
-    public void AddPerson(string name, int turns)
+    public class TakingTurnsQueue
     {
-        queue.Enqueue((name, turns));
-    }
+        private Queue<(string name, int turns)> queue = new();
 
-    public (string Name, int Turns) GetNextPerson()
-    {
-        if (queue.Count == 0)
+        public void AddPerson(string name, int turns)
         {
-            throw new InvalidOperationException("The queue is empty.");
+            queue.Enqueue((name, turns));
         }
 
-        var person = queue.Dequeue();
-
-        // If infinite turns or more than 1 turn left, re-enqueue the person
-        if (person.Turns <= 0 || person.Turns > 1)
+        public string GetNextPerson()
         {
-            queue.Enqueue((person.Name, person.Turns > 0 ? person.Turns - 1 : person.Turns));
+            if (queue.Count == 0)
+                throw new InvalidOperationException("The queue is empty.");
+
+            var person = queue.Dequeue();
+
+            // If turns <= 0, infinite turns. Otherwise, decrement turns.
+            if (person.turns <= 0 || person.turns > 1)
+            {
+                queue.Enqueue((person.name, person.turns > 0 ? person.turns - 1 : person.turns));
+            }
+
+            return person.name;
         }
 
-        return person;
+        public int Length => queue.Count;
     }
 }
