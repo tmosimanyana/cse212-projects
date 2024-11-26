@@ -1,44 +1,30 @@
+using System;
+using System.Collections.Generic;
+
 public class TakingTurnsQueue
 {
-    private class Person
-    {
-        public string Name { get; }
-        public int Turns { get; set; }
-
-        public Person(string name, int turns)
-        {
-            Name = name;
-            Turns = turns;
-        }
-    }
-
-    private readonly Queue<Person> _queue = new();
+    private Queue<(string name, int turns)> queue = new Queue<(string name, int turns)>();
 
     public void AddPerson(string name, int turns)
     {
-        _queue.Enqueue(new Person(name, turns));
+        queue.Enqueue((name, turns));
     }
 
-    public Person GetNextPerson()
+    public string GetNextPerson()
     {
-        if (_queue.Count == 0)
+        if (queue.Count == 0)
+        {
             throw new InvalidOperationException("The queue is empty.");
-
-        var person = _queue.Dequeue();
-
-        if (person.Turns > 0)
-        {
-            person.Turns--;
-            _queue.Enqueue(person);
-        }
-        else if (person.Turns == 0) // Infinite turns
-        {
-            _queue.Enqueue(person);
         }
 
-        return person;
+        var person = queue.Dequeue();
+
+        // If turns <= 0, infinite turns. Otherwise, decrement turns.
+        if (person.turns <= 0 || person.turns > 1)
+        {
+            queue.Enqueue((person.name, person.turns > 0 ? person.turns - 1 : person.turns));
+        }
+
+        return person.name;
     }
-
-    public int Length => _queue.Count;
 }
-
