@@ -1,8 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 
 [TestClass]
-public class PriorityQueueTests
+public class PriorityQueue_Tests
 {
     [TestMethod]
     public void TestPriorityQueue_BasicPriority()

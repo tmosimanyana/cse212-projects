@@ -3,14 +3,16 @@ using System.Collections.Generic;
 
 public class TakingTurnsQueue
 {
-    private Queue<(string name, int turns)> queue = new Queue<(string name, int turns)>();
+    private Queue<(string Name, int Turns)> queue = new();
+
+    public int Length => queue.Count;
 
     public void AddPerson(string name, int turns)
     {
         queue.Enqueue((name, turns));
     }
 
-    public string GetNextPerson()
+    public (string Name, int Turns) GetNextPerson()
     {
         if (queue.Count == 0)
         {
@@ -19,12 +21,12 @@ public class TakingTurnsQueue
 
         var person = queue.Dequeue();
 
-        // If turns <= 0, infinite turns. Otherwise, decrement turns.
-        if (person.turns <= 0 || person.turns > 1)
+        // If infinite turns or more than 1 turn left, re-enqueue the person
+        if (person.Turns <= 0 || person.Turns > 1)
         {
-            queue.Enqueue((person.name, person.turns > 0 ? person.turns - 1 : person.turns));
+            queue.Enqueue((person.Name, person.Turns > 0 ? person.Turns - 1 : person.Turns));
         }
 
-        return person.name;
+        return person;
     }
 }

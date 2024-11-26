@@ -1,7 +1,7 @@
 public class Person
 {
-    public string Name { get; set; }
-    public int Turns { get; set; }
+    public string Name { get; }
+    public int Turns { get; }
 
     public Person(string name, int turns)
     {
