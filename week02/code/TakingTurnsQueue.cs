@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace YourNamespace
 {
     public class TakingTurnsQueue
@@ -19,7 +16,6 @@ namespace YourNamespace
 
             var person = queue.Dequeue();
 
-            // If turns <= 0, infinite turns. Otherwise, decrement turns.
             if (person.turns <= 0 || person.turns > 1)
             {
                 queue.Enqueue((person.name, person.turns > 0 ? person.turns - 1 : person.turns));

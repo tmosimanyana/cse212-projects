@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace YourNamespace
+﻿namespace YourNamespace
 {
     public class PriorityQueue<T>
     {

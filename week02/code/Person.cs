@@ -3,7 +3,7 @@ namespace YourNamespace
     public class Person
     {
         public string Name { get; }
-        public int Turns { get; }
+        public int Turns { get; set; }
 
         public Person(string name, int turns)
         {
