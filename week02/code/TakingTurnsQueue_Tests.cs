@@ -9,6 +9,9 @@ namespace YourNamespace.Tests
         [TestMethod]
         public void TestTakingTurnsQueue_FiniteRepetition()
         {
+            // Defect(s) Found: Infinite loops for persons with infinite turns were not handled.
+            // Fix: Re-enqueue persons with infinite turns correctly in GetNextPerson.
+
             var bob = new Person("Bob", 2);
             var tim = new Person("Tim", 5);
             var sue = new Person("Sue", 3);
@@ -31,6 +34,9 @@ namespace YourNamespace.Tests
         [TestMethod]
         public void TestTakingTurnsQueue_AddPlayerMidway()
         {
+            // Defect(s) Found: Adding a player midway did not consider their turns properly.
+            // Fix: Ensure newly added persons are handled correctly.
+
             var bob = new Person("Bob", 2);
             var tim = new Person("Tim", 5);
             var sue = new Person("Sue", 3);
@@ -61,6 +67,9 @@ namespace YourNamespace.Tests
         [TestMethod]
         public void TestTakingTurnsQueue_ForeverZero()
         {
+            // Defect(s) Found: Infinite turns not being re-enqueued correctly.
+            // Fix: Re-enqueue persons with zero or infinite turns properly.
+
             var bob = new Person("Bob", 2);
             var tim = new Person("Tim", 0);
             var sue = new Person("Sue", 3);
@@ -82,6 +91,9 @@ namespace YourNamespace.Tests
         [ExpectedException(typeof(InvalidOperationException))]
         public void TestTakingTurnsQueue_Empty()
         {
+            // Defect(s) Found: No exception thrown for empty queue on dequeue.
+            // Fix: Throw InvalidOperationException for empty queue access.
+
             var players = new TakingTurnsQueue();
             players.GetNextPerson();
         }
