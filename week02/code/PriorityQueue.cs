@@ -1,7 +1,12 @@
-﻿namespace YourNamespace
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace YourNamespace
 {
     public class PriorityQueue<T>
     {
+        // Internal class for queue items.
         private class QueueItem
         {
             public T Value { get; }
@@ -16,11 +21,13 @@
 
         private List<QueueItem> queue = new();
 
+        // Enqueue a new item with priority.
         public void Enqueue(T value, int priority)
         {
             queue.Add(new QueueItem(value, priority));
         }
 
+        // Dequeue the item with the highest priority (FIFO for ties).
         public T Dequeue()
         {
             if (queue.Count == 0)
