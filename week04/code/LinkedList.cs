@@ -1,197 +1,114 @@
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 
-public class LinkedList : IEnumerable<int>
+namespace YourNamespace.Tests
 {
-    private Node? _head;
-    private Node? _tail;
-
-    /// <summary>
-    /// Node class for the linked list.
-    /// </summary>
-    private class Node
+    [TestClass]
+    public class PriorityQueue_Tests
     {
-        public int Data { get; set; }
-        public Node? Next { get; set; }
-        public Node? Prev { get; set; }
-
-        public Node(int data)
+        [TestMethod]
+        public void TestEnqueueDequeue_SingleElement()
         {
-            Data = data;
-            Next = null;
-            Prev = null;
+            // Defect(s) Found: Dequeue did not remove the item from the queue.
+            // Fix: Corrected Dequeue method to remove the item after returning it.
+
+            var queue = new PriorityQueue<string>();
+            queue.Enqueue("A", 10);
+
+            Assert.AreEqual("A", queue.Dequeue());
+            Assert.AreEqual(0, queue.Length);
         }
-    }
 
-    /// <summary>
-    /// Insert a new node at the front (i.e., the head) of the linked list.
-    /// </summary>
-    public void InsertHead(int value)
-    {
-        Node newNode = new(value);
-
-        if (_head is null)
+        [TestMethod]
+        public void TestDequeue_HighestPriority()
         {
-            _head = newNode;
-            _tail = newNode;
+            // Defect(s) Found: Dequeue did not always return the highest-priority item.
+            // Fix: Ensure the item with the highest priority is always dequeued.
+
+            var queue = new PriorityQueue<string>();
+            queue.Enqueue("A", 1);
+            queue.Enqueue("B", 5);
+            queue.Enqueue("C", 3);
+
+            Assert.AreEqual("B", queue.Dequeue());
         }
-        else
+
+        [TestMethod]
+        public void TestDequeue_FIFOTie()
         {
-            newNode.Next = _head;
-            _head.Prev = newNode;
-            _head = newNode;
+            // Defect(s) Found: FIFO order for same-priority items was not maintained.
+            // Fix: Ensure Dequeue returns the first added item among those with the same priority.
+
+            var queue = new PriorityQueue<string>();
+            queue.Enqueue("A", 5);
+            queue.Enqueue("B", 5);
+            queue.Enqueue("C", 3);
+
+            Assert.AreEqual("A", queue.Dequeue());
+            Assert.AreEqual("B", queue.Dequeue());
         }
-    }
 
-    /// <summary>
-    /// Insert a new node at the back (i.e., the tail) of the linked list.
-    /// </summary>
-    public void InsertTail(int value)
-    {
-        Node newNode = new(value);
-
-        if (_tail is null)
+        [TestMethod]
+        public void TestDequeue_EmptyQueue()
         {
-            _head = newNode;
-            _tail = newNode;
+            // Defect(s) Found: Dequeue did not throw an exception for an empty queue.
+            // Fix: Added exception handling for an empty queue in the Dequeue method.
+
+            var queue = new PriorityQueue<string>();
+
+            Assert.ThrowsException<InvalidOperationException>(() => queue.Dequeue());
         }
-        else
+
+        [TestMethod]
+        public void TestLength_Property()
         {
-            _tail.Next = newNode;
-            newNode.Prev = _tail;
-            _tail = newNode;
-        }
-    }
+            // Defect(s) Found: Length property did not accurately reflect the number of items.
+            // Fix: Correct Length property to count items correctly.
 
-    /// <summary>
-    /// Remove the first node (i.e., the head) of the linked list.
-    /// </summary>
-    public void RemoveHead()
-    {
-        if (_head == _tail)
+            var queue = new PriorityQueue<string>();
+            Assert.AreEqual(0, queue.Length);
+
+            queue.Enqueue("A", 1);
+            queue.Enqueue("B", 2);
+
+            Assert.AreEqual(2, queue.Length);
+
+            queue.Dequeue();
+            Assert.AreEqual(1, queue.Length);
+        }
+
+        [TestMethod]
+        public void TestDequeue_MultipleItems()
         {
-            _head = null;
-            _tail = null;
+            // Defect(s) Found: Dequeue did not correctly handle multiple items of different priorities.
+            // Fix: Ensure Dequeue considers all items and removes the correct one.
+
+            var queue = new PriorityQueue<string>();
+            queue.Enqueue("A", 1);
+            queue.Enqueue("B", 5);
+            queue.Enqueue("C", 3);
+
+            Assert.AreEqual("B", queue.Dequeue());
+            Assert.AreEqual("C", queue.Dequeue());
+            Assert.AreEqual("A", queue.Dequeue());
         }
-        else if (_head is not null)
+
+        [TestMethod]
+        public void TestEnqueue_MultiplePriorities()
         {
-            _head = _head.Next;
-            if (_head is not null)
-            {
-                _head.Prev = null;
-            }
+            // Defect(s) Found: Enqueue did not correctly add items with various priorities.
+            // Fix: Ensure items are added to the queue without altering their priority.
+
+            var queue = new PriorityQueue<string>();
+            queue.Enqueue("A", 1);
+            queue.Enqueue("B", 2);
+            queue.Enqueue("C", 3);
+
+            Assert.AreEqual(3, queue.Length);
+
+            Assert.AreEqual("C", queue.Dequeue()); // Highest priority
+            Assert.AreEqual("B", queue.Dequeue());
+            Assert.AreEqual("A", queue.Dequeue());
         }
-    }
-
-    /// <summary>
-    /// Remove the last node (i.e., the tail) of the linked list.
-    /// </summary>
-    public void RemoveTail()
-    {
-        if (_head == _tail)
-        {
-            _head = null;
-            _tail = null;
-        }
-        else if (_tail is not null)
-        {
-            _tail = _tail.Prev;
-            if (_tail is not null)
-            {
-                _tail.Next = null;
-            }
-        }
-    }
-
-    /// <summary>
-    /// Remove the first node that contains the specified value.
-    /// </summary>
-    public void Remove(int value)
-    {
-        Node? curr = _head;
-
-        while (curr is not null)
-        {
-            if (curr.Data == value)
-            {
-                if (curr == _head)
-                {
-                    RemoveHead();
-                }
-                else if (curr == _tail)
-                {
-                    RemoveTail();
-                }
-                else
-                {
-                    curr.Prev!.Next = curr.Next;
-                    curr.Next!.Prev = curr.Prev;
-                }
-                return;
-            }
-            curr = curr.Next;
-        }
-    }
-
-    /// <summary>
-    /// Replace all occurrences of oldValue with newValue.
-    /// </summary>
-    public void Replace(int oldValue, int newValue)
-    {
-        Node? curr = _head;
-
-        while (curr is not null)
-        {
-            if (curr.Data == oldValue)
-            {
-                curr.Data = newValue;
-            }
-            curr = curr.Next;
-        }
-    }
-
-    /// <summary>
-    /// Iterate forward through the linked list.
-    /// </summary>
-    public IEnumerator<int> GetEnumerator()
-    {
-        Node? curr = _head;
-        while (curr is not null)
-        {
-            yield return curr.Data;
-            curr = curr.Next;
-        }
-    }
-
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
-    }
-
-    /// <summary>
-    /// Iterate backward through the linked list.
-    /// </summary>
-    public IEnumerable Reverse()
-    {
-        Node? curr = _tail;
-        while (curr is not null)
-        {
-            yield return curr.Data;
-            curr = curr.Prev;
-        }
-    }
-
-    public override string ToString()
-    {
-        return "<LinkedList>{" + string.Join(", ", this) + "}";
-    }
-}
-
-public static class IntArrayExtensionMethods
-{
-    public static string AsString(this IEnumerable array)
-    {
-        return "<IEnumerable>{" + string.Join(", ", array.Cast<int>()) + "}";
     }
 }
