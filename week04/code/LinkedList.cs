@@ -1,114 +1,216 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Text;
 
-namespace YourNamespace.Tests
+public class Node
 {
-    [TestClass]
-    public class PriorityQueue_Tests
+    public int Value;
+    public Node Next;
+
+    public Node(int value)
     {
-        [TestMethod]
-        public void TestEnqueueDequeue_SingleElement()
+        Value = value;
+        Next = null;
+    }
+}
+
+public class LinkedList : IEnumerable<int>
+{
+    private Node head;
+
+    public LinkedList()
+    {
+        head = null;
+    }
+
+    // Insert at the head of the list
+    public void InsertHead(int value)
+    {
+        Node newNode = new Node(value);
+        newNode.Next = head;
+        head = newNode;
+    }
+
+    // Problem 1: Insert at the tail of the list
+    public void InsertTail(int value)
+    {
+        Node newNode = new Node(value);
+        if (head == null)
         {
-            // Defect(s) Found: Dequeue did not remove the item from the queue.
-            // Fix: Corrected Dequeue method to remove the item after returning it.
-
-            var queue = new PriorityQueue<string>();
-            queue.Enqueue("A", 10);
-
-            Assert.AreEqual("A", queue.Dequeue());
-            Assert.AreEqual(0, queue.Length);
+            head = newNode;
+            return;
         }
 
-        [TestMethod]
-        public void TestDequeue_HighestPriority()
+        Node current = head;
+        while (current.Next != null)
         {
-            // Defect(s) Found: Dequeue did not always return the highest-priority item.
-            // Fix: Ensure the item with the highest priority is always dequeued.
+            current = current.Next;
+        }
+        current.Next = newNode;
+    }
 
-            var queue = new PriorityQueue<string>();
-            queue.Enqueue("A", 1);
-            queue.Enqueue("B", 5);
-            queue.Enqueue("C", 3);
+    // Problem 2: Remove the tail node
+    public void RemoveTail()
+    {
+        if (head == null) return;
 
-            Assert.AreEqual("B", queue.Dequeue());
+        if (head.Next == null)
+        {
+            head = null;
+            return;
         }
 
-        [TestMethod]
-        public void TestDequeue_FIFOTie()
+        Node current = head;
+        while (current.Next.Next != null)
         {
-            // Defect(s) Found: FIFO order for same-priority items was not maintained.
-            // Fix: Ensure Dequeue returns the first added item among those with the same priority.
+            current = current.Next;
+        }
+        current.Next = null;
+    }
 
-            var queue = new PriorityQueue<string>();
-            queue.Enqueue("A", 5);
-            queue.Enqueue("B", 5);
-            queue.Enqueue("C", 3);
+    // Problem 3: Remove the first node with a specific value
+    public void Remove(int value)
+    {
+        if (head == null) return;
 
-            Assert.AreEqual("A", queue.Dequeue());
-            Assert.AreEqual("B", queue.Dequeue());
+        if (head.Value == value)
+        {
+            head = head.Next;
+            return;
         }
 
-        [TestMethod]
-        public void TestDequeue_EmptyQueue()
+        Node current = head;
+        while (current.Next != null && current.Next.Value != value)
         {
-            // Defect(s) Found: Dequeue did not throw an exception for an empty queue.
-            // Fix: Added exception handling for an empty queue in the Dequeue method.
-
-            var queue = new PriorityQueue<string>();
-
-            Assert.ThrowsException<InvalidOperationException>(() => queue.Dequeue());
+            current = current.Next;
         }
 
-        [TestMethod]
-        public void TestLength_Property()
+        if (current.Next != null)
         {
-            // Defect(s) Found: Length property did not accurately reflect the number of items.
-            // Fix: Correct Length property to count items correctly.
+            current.Next = current.Next.Next;
+        }
+    }
 
-            var queue = new PriorityQueue<string>();
-            Assert.AreEqual(0, queue.Length);
+    // Insert after a specific value
+    public void InsertAfter(int target, int value)
+    {
+        Node current = head;
+        while (current != null)
+        {
+            if (current.Value == target)
+            {
+                Node newNode = new Node(value);
+                newNode.Next = current.Next;
+                current.Next = newNode;
+                return;
+            }
+            current = current.Next;
+        }
+    }
 
-            queue.Enqueue("A", 1);
-            queue.Enqueue("B", 2);
+    // Problem 4: Replace all occurrences of oldValue with newValue
+    public void Replace(int oldValue, int newValue)
+    {
+        Node current = head;
+        while (current != null)
+        {
+            if (current.Value == oldValue)
+            {
+                current.Value = newValue;
+            }
+            current = current.Next;
+        }
+    }
 
-            Assert.AreEqual(2, queue.Length);
+    // Problem 5: Reversed iterator
+    public IEnumerable<int> Reverse()
+    {
+        Stack<int> stack = new Stack<int>();
+        Node current = head;
 
-            queue.Dequeue();
-            Assert.AreEqual(1, queue.Length);
+        while (current != null)
+        {
+            stack.Push(current.Value);
+            current = current.Next;
         }
 
-        [TestMethod]
-        public void TestDequeue_MultipleItems()
+        while (stack.Count > 0)
         {
-            // Defect(s) Found: Dequeue did not correctly handle multiple items of different priorities.
-            // Fix: Ensure Dequeue considers all items and removes the correct one.
+            yield return stack.Pop();
+        }
+    }
 
-            var queue = new PriorityQueue<string>();
-            queue.Enqueue("A", 1);
-            queue.Enqueue("B", 5);
-            queue.Enqueue("C", 3);
+    // Check if both head and tail are null (used in tests)
+    public bool HeadAndTailAreNull()
+    {
+        return head == null;
+    }
 
-            Assert.AreEqual("B", queue.Dequeue());
-            Assert.AreEqual("C", queue.Dequeue());
-            Assert.AreEqual("A", queue.Dequeue());
+    // Check if both head and tail are not null (used in tests)
+    public bool HeadAndTailAreNotNull()
+    {
+        return head != null;
+    }
+
+    // Convert the list to string format "<LinkedList>{value1, value2, ...}"
+    public override string ToString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.Append("<LinkedList>{");
+
+        Node current = head;
+        while (current != null)
+        {
+            sb.Append(current.Value);
+            if (current.Next != null)
+            {
+                sb.Append(", ");
+            }
+            current = current.Next;
         }
 
-        [TestMethod]
-        public void TestEnqueue_MultiplePriorities()
+        sb.Append("}");
+        return sb.ToString();
+    }
+
+    // Implement IEnumerable for iteration
+    public IEnumerator<int> GetEnumerator()
+    {
+        Node current = head;
+        while (current != null)
         {
-            // Defect(s) Found: Enqueue did not correctly add items with various priorities.
-            // Fix: Ensure items are added to the queue without altering their priority.
-
-            var queue = new PriorityQueue<string>();
-            queue.Enqueue("A", 1);
-            queue.Enqueue("B", 2);
-            queue.Enqueue("C", 3);
-
-            Assert.AreEqual(3, queue.Length);
-
-            Assert.AreEqual("C", queue.Dequeue()); // Highest priority
-            Assert.AreEqual("B", queue.Dequeue());
-            Assert.AreEqual("A", queue.Dequeue());
+            yield return current.Value;
+            current = current.Next;
         }
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+}
+
+// Extension method for IEnumerable<int> to convert to string format "<IEnumerable>{value1, value2, ...}"
+public static class IEnumerableExtensions
+{
+    public static string AsString(this IEnumerable<int> enumerable)
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.Append("<IEnumerable>{");
+
+        bool first = true;
+        foreach (var item in enumerable)
+        {
+            if (!first)
+            {
+                sb.Append(", ");
+            }
+            sb.Append(item);
+            first = false;
+        }
+
+        sb.Append("}");
+        return sb.ToString();
     }
 }
