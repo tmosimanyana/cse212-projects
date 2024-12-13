@@ -2,33 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MazeSolver
-{
-    public class Maze
-    {
-        private int[,] _mazeArray;
-        public int Width { get; }
-        public int Height { get; }
-
-        public Maze(int[,] mazeArray)
-        {
-            _mazeArray = mazeArray;
-            Width = mazeArray.GetLength(1);  // Width corresponds to the number of columns
-            Height = mazeArray.GetLength(0); // Height corresponds to the number of rows
-        }
-
-        public int this[int x, int y] 
-        {
-            get => _mazeArray[x, y];
-            set => _mazeArray[x, y] = value;
-        }
-
-        // Optional methods to retrieve dimensions
-        public int GetWidth() => Width;
-        public int GetHeight() => Height;
-    }
-}
-
 namespace RecursionSolver
 {
     public static class Recursion
@@ -125,7 +98,7 @@ namespace RecursionSolver
         }
 
         /// <summary>
-        /// Solve Maze using recursion to insert all paths that start at (0,0) and end at the 'end' square.
+        /// Problem 5: Solve Maze using recursion to insert all paths that start at (0,0) and end at the 'end' square.
         /// </summary>
         public static void SolveMaze(List<string> results, MazeSolver.Maze maze, int x = 0, int y = 0, List<ValueTuple<int, int>>? currPath = null)
         {
@@ -156,50 +129,6 @@ namespace RecursionSolver
 
             // Backtrack: unmark the current cell as visited
             maze[x, y] = 1;
-        }
-    }
-}
-
-class Program
-{
-    static void Main(string[] args)
-    {
-        // Example usage of the MazeSolver and RecursionSolver
-
-        // Example Maze (1 = free path, 0 = wall, 2 = goal)
-        int[,] mazeArray = new int[,] {
-            { 1, 1, 1, 0, 0 },
-            { 0, 1, 0, 1, 0 },
-            { 1, 1, 1, 1, 0 },
-            { 0, 0, 0, 1, 2 },
-        };
-
-        // Create a maze object
-        MazeSolver.Maze maze = new MazeSolver.Maze(mazeArray);
-        
-        // Solve the maze recursively and collect results
-        List<string> paths = new List<string>();
-        RecursionSolver.Recursion.SolveMaze(paths, maze);
-
-        // Print all possible paths
-        Console.WriteLine("Possible paths:");
-        foreach (var path in paths)
-        {
-            Console.WriteLine(path);
-        }
-
-        // Example recursive problem: Sum of squares
-        int n = 5;
-        int sum = RecursionSolver.Recursion.SumSquaresRecursive(n);
-        Console.WriteLine($"Sum of squares from 1 to {n}: {sum}");
-
-        // Example recursive problem: Permutations
-        List<string> permutations = new List<string>();
-        RecursionSolver.Recursion.PermutationsChoose(permutations, "abc", 2);
-        Console.WriteLine("Permutations of length 2 from 'abc':");
-        foreach (var perm in permutations)
-        {
-            Console.WriteLine(perm);
         }
     }
 }
