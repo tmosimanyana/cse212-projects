@@ -1,5 +1,3 @@
-using System;
-
 public class LinkedList
 {
     public class Node
@@ -61,32 +59,6 @@ public class LinkedList
         {
             _tail = _tail.Prev;
             _tail!.Next = null;
-        }
-    }
-
-    /// <summary>
-    /// Remove the first node with the specified value.
-    /// </summary>
-    public void Remove(int value)
-    {
-        Node? current = _head;
-
-        while (current != null)
-        {
-            if (current.Data == value)
-            {
-                if (current == _head) RemoveHead();
-                else if (current == _tail) RemoveTail();
-                else
-                {
-                    current.Prev!.Next = current.Next;
-                    current.Next!.Prev = current.Prev;
-                }
-
-                return;
-            }
-
-            current = current.Next;
         }
     }
 
