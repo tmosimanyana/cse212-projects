@@ -1,64 +1,121 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-[TestClass]
-public class LinkedListTests
+public class LinkedList
 {
-    [TestMethod]
-    public void InsertTail_Empty()
-    {
-        var ll = new LinkedList();
-        Assert.IsNull(ll.Head);
-        Assert.IsNull(ll.Tail);
+    public Node? Head { get; private set; }
+    public Node? Tail { get; private set; }
 
-        ll.InsertTail(1);
-        Assert.IsNotNull(ll.Head);
-        Assert.IsNotNull(ll.Tail);
-        Assert.AreEqual("<LinkedList>{1}", ll.ToString());
+    public void InsertHead(int data)
+    {
+        var newNode = new Node(data);
+        if (Head == null)
+        {
+            Head = Tail = newNode;
+        }
+        else
+        {
+            newNode.Next = Head;
+            Head.Prev = newNode;
+            Head = newNode;
+        }
     }
 
-    [TestMethod]
-    public void InsertTail_Basic()
+    public void InsertTail(int data)
     {
-        var ll = new LinkedList();
-        ll.InsertHead(1);
-        ll.InsertHead(2);
-        ll.InsertTail(3);
-        ll.InsertTail(4);
-        
-        Assert.AreEqual("<LinkedList>{2, 1, 3, 4}", ll.ToString());
+        var newNode = new Node(data);
+        if (Tail == null)
+        {
+            Head = Tail = newNode;
+        }
+        else
+        {
+            Tail.Next = newNode;
+            newNode.Prev = Tail;
+            Tail = newNode;
+        }
     }
 
-    [TestMethod]
-    public void Remove_Head()
+    public void RemoveTail()
     {
-        var ll = new LinkedList();
-        ll.InsertHead(1);
-        ll.InsertHead(2);
+        if (Tail == null) return;
 
-        ll.Remove(2);  // Removing head node
-        Assert.AreEqual("<LinkedList>{1}", ll.ToString());
+        if (Head == Tail)
+        {
+            Head = Tail = null;
+        }
+        else
+        {
+            Tail = Tail.Prev;
+            Tail.Next = null;
+        }
     }
 
-    [TestMethod]
-    public void Remove_Tail()
+    public void Remove(int data)
     {
-        var ll = new LinkedList();
-        ll.InsertHead(1);
-        ll.InsertTail(2);
+        var current = Head;
+        while (current != null)
+        {
+            if (current.Data == data)
+            {
+                if (current.Prev != null)
+                    current.Prev.Next = current.Next;
+                else
+                    Head = current.Next;
 
-        ll.Remove(2);  // Removing tail node
-        Assert.AreEqual("<LinkedList>{1}", ll.ToString());
+                if (current.Next != null)
+                    current.Next.Prev = current.Prev;
+                else
+                    Tail = current.Prev;
+
+                return;
+            }
+            current = current.Next;
+        }
     }
 
-    [TestMethod]
-    public void Remove_Middle()
+    public void Replace(int oldValue, int newValue)
     {
-        var ll = new LinkedList();
-        ll.InsertHead(1);
-        ll.InsertTail(2);
-        ll.InsertTail(3);
+        var current = Head;
+        while (current != null)
+        {
+            if (current.Data == oldValue)
+            {
+                current.Data = newValue;
+            }
+            current = current.Next;
+        }
+    }
 
-        ll.Remove(2);  // Removing middle node
-        Assert.AreEqual("<LinkedList>{1, 3}", ll.ToString());
+    public IEnumerable<int> Reverse()
+    {
+        var current = Tail;
+        while (current != null)
+        {
+            yield return current.Data;
+            current = current.Prev;
+        }
+    }
+
+    public override string ToString()
+    {
+        var result = "<LinkedList>{";
+        var current = Head;
+        while (current != null)
+        {
+            result += current.Data + (current.Next != null ? ", " : "");
+            current = current.Next;
+        }
+        result += "}";
+        return result;
+    }
+}
+
+public class Node
+{
+    public int Data { get; set; }
+    public Node? Next { get; set; }
+    public Node? Prev { get; set; }
+
+    public Node(int data)
+    {
+        this.Data = data;
     }
 }
