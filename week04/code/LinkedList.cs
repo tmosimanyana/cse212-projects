@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 public class LinkedList
 {
+    // Node class to represent each element in the linked list
     public class Node
     {
         public int Data { get; set; }
@@ -17,18 +18,17 @@ public class LinkedList
         }
     }
 
-    private Node? _head;
-    private Node? _tail;
+    private Node? _head; // Head of the linked list
+    private Node? _tail; // Tail of the linked list
 
+    // Constructor to initialize an empty linked list
     public LinkedList()
     {
         _head = null;
         _tail = null;
     }
 
-    /// <summary>
-    /// Insert a new node at the end of the linked list.
-    /// </summary>
+    // Method to insert a new node at the end of the linked list
     public void InsertTail(int value)
     {
         Node newNode = new(value);
@@ -46,9 +46,7 @@ public class LinkedList
         }
     }
 
-    /// <summary>
-    /// Remove the last node in the linked list.
-    /// </summary>
+    // Method to remove the last node in the linked list
     public void RemoveTail()
     {
         if (_tail == null) return;
@@ -65,9 +63,7 @@ public class LinkedList
         }
     }
 
-    /// <summary>
-    /// Replace all occurrences of oldValue with newValue.
-    /// </summary>
+    // Method to replace all occurrences of oldValue with newValue
     public void Replace(int oldValue, int newValue)
     {
         Node? current = _head;
@@ -82,9 +78,7 @@ public class LinkedList
         }
     }
 
-    /// <summary>
-    /// Iterate backward through the linked list.
-    /// </summary>
+    // Method to iterate backward through the linked list
     public IEnumerable<int> Reverse()
     {
         Node? current = _tail;
@@ -96,9 +90,7 @@ public class LinkedList
         }
     }
 
-    /// <summary>
-    /// Insert a new node after a specific node.
-    /// </summary>
+    // Method to insert a new node after a specific node
     public void InsertAfter(Node? node, int value)
     {
         if (node == null) return;
@@ -121,9 +113,7 @@ public class LinkedList
         }
     }
 
-    /// <summary>
-    /// Remove the first node in the linked list.
-    /// </summary>
+    // Method to remove the first node in the linked list
     public void RemoveHead()
     {
         if (_head == null) return;
@@ -140,9 +130,7 @@ public class LinkedList
         }
     }
 
-    /// <summary>
-    /// Iterate forward through the linked list.
-    /// </summary>
+    // Method to iterate forward through the linked list
     public IEnumerable<int> GetEnumerator()
     {
         Node? current = _head;
@@ -154,14 +142,14 @@ public class LinkedList
         }
     }
 
-    // Overload example for addition operator
+    // Overload for addition operator to insert a value at the tail
     public static LinkedList operator +(LinkedList list, int value)
     {
         list.InsertTail(value);
         return list;
     }
 
-    // Overload example for equality operator
+    // Overload for equality operator to check if two lists are equal
     public static bool operator ==(LinkedList list1, LinkedList list2)
     {
         Node? current1 = list1._head;
@@ -178,12 +166,13 @@ public class LinkedList
         return current1 == null && current2 == null; // Both should be null to be equal
     }
 
+    // Overload for inequality operator to check if two lists are not equal
     public static bool operator !=(LinkedList list1, LinkedList list2)
     {
         return !(list1 == list2); // Negation of equality operator
     }
 
-    // Overload comparison operators
+    // Overload for greater-than comparison based on sum of elements
     public static bool operator >(LinkedList list1, LinkedList list2)
     {
         int sum1 = list1.GetSum();
@@ -191,6 +180,7 @@ public class LinkedList
         return sum1 > sum2;
     }
 
+    // Overload for less-than comparison based on sum of elements
     public static bool operator <(LinkedList list1, LinkedList list2)
     {
         int sum1 = list1.GetSum();
@@ -213,7 +203,7 @@ public class LinkedList
         return sum;
     }
 
-    // Ensure proper equality check (needed for == and != operators to work correctly)
+    // Ensure proper equality check for == and != operators
     public override bool Equals(object? obj)
     {
         if (obj is LinkedList other)
@@ -223,6 +213,7 @@ public class LinkedList
         return false;
     }
 
+    // Override GetHashCode for proper hash-based operations
     public override int GetHashCode()
     {
         int hashCode = 0;
