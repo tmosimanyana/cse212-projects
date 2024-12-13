@@ -1,3 +1,5 @@
+using System;
+
 public class LinkedList
 {
     public class Node
@@ -22,16 +24,6 @@ public class LinkedList
         _head = null;
         _tail = null;
     }
-
-    /// <summary>
-    /// Check if both head and tail are null.
-    /// </summary>
-    public bool HeadAndTailAreNull() => _head == null && _tail == null;
-
-    /// <summary>
-    /// Check if both head and tail are not null.
-    /// </summary>
-    public bool HeadAndTailAreNotNull() => _head != null && _tail != null;
 
     /// <summary>
     /// Insert a new node at the end of the linked list.
@@ -75,7 +67,7 @@ public class LinkedList
     /// <summary>
     /// Remove the first node with the specified value.
     /// </summary>
-    public void RemoveNode(int value)
+    public void Remove(int value)
     {
         Node? current = _head;
 
@@ -116,34 +108,41 @@ public class LinkedList
     }
 
     /// <summary>
-    /// Insert a new node after a specific node.
+    /// Iterate backward through the linked list.
     /// </summary>
-    public void InsertAfter(int value, int newValue)
+    public IEnumerable<int> Reverse()
     {
-        Node? current = _head;
+        Node? current = _tail;
 
         while (current != null)
         {
-            if (current.Data == value)
-            {
-                Node newNode = new(newValue);
+            yield return current.Data;
+            current = current.Prev;
+        }
+    }
 
-                if (current == _tail)
-                {
-                    current.Next = newNode;
-                    newNode.Prev = current;
-                    _tail = newNode;
-                }
-                else
-                {
-                    newNode.Next = current.Next;
-                    newNode.Prev = current;
-                    current.Next.Prev = newNode;
-                    current.Next = newNode;
-                }
-                return;
-            }
-            current = current.Next;
+    /// <summary>
+    /// Insert a new node after a specific node.
+    /// </summary>
+    public void InsertAfter(Node? node, int value)
+    {
+        if (node == null) return;
+
+        Node newNode = new(value);
+        newNode.Next = node.Next;
+        newNode.Prev = node;
+
+        if (node.Next != null)
+        {
+            node.Next.Prev = newNode;
+        }
+
+        node.Next = newNode;
+
+        // If the node was the tail, update the tail
+        if (node == _tail)
+        {
+            _tail = newNode;
         }
     }
 
@@ -180,17 +179,86 @@ public class LinkedList
         }
     }
 
-    /// <summary>
-    /// Iterate backward through the linked list.
-    /// </summary>
-    public IEnumerable<int> Reverse()
+    // Overload example for addition operator
+    public static LinkedList operator +(LinkedList list, int value)
     {
-        Node? current = _tail;
+        list.InsertTail(value);
+        return list;
+    }
+
+    // Overload example for equality operator
+    public static bool operator ==(LinkedList list1, LinkedList list2)
+    {
+        Node? current1 = list1._head;
+        Node? current2 = list2._head;
+
+        while (current1 != null && current2 != null)
+        {
+            if (current1.Data != current2.Data) return false;
+
+            current1 = current1.Next;
+            current2 = current2.Next;
+        }
+
+        return current1 == null && current2 == null; // Both should be null to be equal
+    }
+
+    public static bool operator !=(LinkedList list1, LinkedList list2)
+    {
+        return !(list1 == list2); // Negation of equality operator
+    }
+
+    // Overload comparison operators
+    public static bool operator >(LinkedList list1, LinkedList list2)
+    {
+        int sum1 = list1.GetSum();
+        int sum2 = list2.GetSum();
+        return sum1 > sum2;
+    }
+
+    public static bool operator <(LinkedList list1, LinkedList list2)
+    {
+        int sum1 = list1.GetSum();
+        int sum2 = list2.GetSum();
+        return sum1 < sum2;
+    }
+
+    // Helper method to calculate the sum of elements in the list
+    private int GetSum()
+    {
+        int sum = 0;
+        Node? current = _head;
 
         while (current != null)
         {
-            yield return current.Data;
-            current = current.Prev;
+            sum += current.Data;
+            current = current.Next;
         }
+
+        return sum;
+    }
+
+    // Ensure proper equality check (needed for == and != operators to work correctly)
+    public override bool Equals(object? obj)
+    {
+        if (obj is LinkedList other)
+        {
+            return this == other;
+        }
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        int hashCode = 0;
+        Node? current = _head;
+
+        while (current != null)
+        {
+            hashCode = (hashCode * 31) + current.Data;
+            current = current.Next;
+        }
+
+        return hashCode;
     }
 }
