@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 public class LinkedList
 {
     public class Node
@@ -232,5 +235,56 @@ public class LinkedList
         }
 
         return hashCode;
+    }
+}
+
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        LinkedList linkedList = new LinkedList();
+
+        // Example of adding values to the linked list using the overloaded + operator
+        linkedList += 10;  // Adds 10 to the list
+        linkedList += 20;  // Adds 20 to the list
+        linkedList += 30;  // Adds 30 to the list
+
+        // Example of iterating forward through the linked list
+        Console.WriteLine("Forward iteration:");
+        foreach (var item in linkedList)
+        {
+            Console.WriteLine(item);
+        }
+
+        // Example of replacing a value in the linked list
+        linkedList.Replace(20, 25);
+        Console.WriteLine("\nAfter replacing 20 with 25:");
+        foreach (var item in linkedList)
+        {
+            Console.WriteLine(item);
+        }
+
+        // Example of iterating backward through the linked list
+        Console.WriteLine("\nBackward iteration:");
+        foreach (var item in linkedList.Reverse())
+        {
+            Console.WriteLine(item);
+        }
+
+        // Example of removing the last node (tail)
+        linkedList.RemoveTail();
+        Console.WriteLine("\nAfter removing the tail:");
+        foreach (var item in linkedList)
+        {
+            Console.WriteLine(item);
+        }
+
+        // Example of removing the first node (head)
+        linkedList.RemoveHead();
+        Console.WriteLine("\nAfter removing the head:");
+        foreach (var item in linkedList)
+        {
+            Console.WriteLine(item);
+        }
     }
 }
