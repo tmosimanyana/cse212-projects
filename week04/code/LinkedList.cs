@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
-
 public class LinkedList
 {
-    private class Node
+    public class Node
     {
         public int Data { get; set; }
         public Node? Next { get; set; }
@@ -119,39 +116,34 @@ public class LinkedList
     }
 
     /// <summary>
-    /// Iterate backward through the linked list.
+    /// Insert a new node after a specific node.
     /// </summary>
-    public IEnumerable<int> Reverse()
+    public void InsertAfter(int value, int newValue)
     {
-        Node? current = _tail;
+        Node? current = _head;
 
         while (current != null)
         {
-            yield return current.Data;
-            current = current.Prev;
-        }
-    }
+            if (current.Data == value)
+            {
+                Node newNode = new(newValue);
 
-    /// <summary>
-    /// Insert a new node after a specific node.
-    /// </summary>
-    public void InsertAfter(Node node, int value)
-    {
-        Node newNode = new(value);
-
-        newNode.Next = node.Next;
-        newNode.Prev = node;
-
-        if (node.Next != null)
-        {
-            node.Next.Prev = newNode;
-        }
-
-        node.Next = newNode;
-
-        if (_tail == node)
-        {
-            _tail = newNode;
+                if (current == _tail)
+                {
+                    current.Next = newNode;
+                    newNode.Prev = current;
+                    _tail = newNode;
+                }
+                else
+                {
+                    newNode.Next = current.Next;
+                    newNode.Prev = current;
+                    current.Next.Prev = newNode;
+                    current.Next = newNode;
+                }
+                return;
+            }
+            current = current.Next;
         }
     }
 
@@ -185,6 +177,20 @@ public class LinkedList
         {
             yield return current.Data;
             current = current.Next;
+        }
+    }
+
+    /// <summary>
+    /// Iterate backward through the linked list.
+    /// </summary>
+    public IEnumerable<int> Reverse()
+    {
+        Node? current = _tail;
+
+        while (current != null)
+        {
+            yield return current.Data;
+            current = current.Prev;
         }
     }
 }
