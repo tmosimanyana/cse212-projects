@@ -75,7 +75,7 @@ public class LinkedList
     /// <summary>
     /// Remove the first node with the specified value.
     /// </summary>
-    public void Remove(int value)
+    public void RemoveNode(int value)
     {
         Node? current = _head;
 
