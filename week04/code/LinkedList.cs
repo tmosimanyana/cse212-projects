@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 public class LinkedList
 {
-    // Node class to represent each element in the linked list
     public class Node
     {
         public int Data { get; set; }
@@ -18,17 +17,16 @@ public class LinkedList
         }
     }
 
-    private Node? _head; // Head of the linked list
-    private Node? _tail; // Tail of the linked list
+    private Node? _head;
+    private Node? _tail;
 
-    // Constructor to initialize an empty linked list
     public LinkedList()
     {
         _head = null;
         _tail = null;
     }
 
-    // Method to insert a new node at the end of the linked list
+    // InsertTail method should be defined only once
     public void InsertTail(int value)
     {
         Node newNode = new(value);
@@ -46,7 +44,6 @@ public class LinkedList
         }
     }
 
-    // Method to remove the last node in the linked list
     public void RemoveTail()
     {
         if (_tail == null) return;
@@ -63,7 +60,6 @@ public class LinkedList
         }
     }
 
-    // Method to replace all occurrences of oldValue with newValue
     public void Replace(int oldValue, int newValue)
     {
         Node? current = _head;
@@ -78,7 +74,6 @@ public class LinkedList
         }
     }
 
-    // Method to iterate backward through the linked list
     public IEnumerable<int> Reverse()
     {
         Node? current = _tail;
@@ -90,7 +85,6 @@ public class LinkedList
         }
     }
 
-    // Method to insert a new node after a specific node
     public void InsertAfter(Node? node, int value)
     {
         if (node == null) return;
@@ -106,14 +100,12 @@ public class LinkedList
 
         node.Next = newNode;
 
-        // If the node was the tail, update the tail
         if (node == _tail)
         {
             _tail = newNode;
         }
     }
 
-    // Method to remove the first node in the linked list
     public void RemoveHead()
     {
         if (_head == null) return;
@@ -130,7 +122,6 @@ public class LinkedList
         }
     }
 
-    // Method to iterate forward through the linked list
     public IEnumerable<int> GetEnumerator()
     {
         Node? current = _head;
@@ -142,14 +133,12 @@ public class LinkedList
         }
     }
 
-    // Overload for addition operator to insert a value at the tail
     public static LinkedList operator +(LinkedList list, int value)
     {
         list.InsertTail(value);
         return list;
     }
 
-    // Overload for equality operator to check if two lists are equal
     public static bool operator ==(LinkedList list1, LinkedList list2)
     {
         Node? current1 = list1._head;
@@ -163,16 +152,14 @@ public class LinkedList
             current2 = current2.Next;
         }
 
-        return current1 == null && current2 == null; // Both should be null to be equal
+        return current1 == null && current2 == null;
     }
 
-    // Overload for inequality operator to check if two lists are not equal
     public static bool operator !=(LinkedList list1, LinkedList list2)
     {
-        return !(list1 == list2); // Negation of equality operator
+        return !(list1 == list2);
     }
 
-    // Overload for greater-than comparison based on sum of elements
     public static bool operator >(LinkedList list1, LinkedList list2)
     {
         int sum1 = list1.GetSum();
@@ -180,7 +167,6 @@ public class LinkedList
         return sum1 > sum2;
     }
 
-    // Overload for less-than comparison based on sum of elements
     public static bool operator <(LinkedList list1, LinkedList list2)
     {
         int sum1 = list1.GetSum();
@@ -188,7 +174,6 @@ public class LinkedList
         return sum1 < sum2;
     }
 
-    // Helper method to calculate the sum of elements in the list
     private int GetSum()
     {
         int sum = 0;
@@ -203,7 +188,6 @@ public class LinkedList
         return sum;
     }
 
-    // Ensure proper equality check for == and != operators
     public override bool Equals(object? obj)
     {
         if (obj is LinkedList other)
@@ -213,7 +197,6 @@ public class LinkedList
         return false;
     }
 
-    // Override GetHashCode for proper hash-based operations
     public override int GetHashCode()
     {
         int hashCode = 0;
