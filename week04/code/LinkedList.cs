@@ -26,9 +26,6 @@ public class LinkedList
         _tail = null;
     }
 
-    /// <summary>
-    /// Insert a new node at the end of the linked list.
-    /// </summary>
     public void InsertTail(int value)
     {
         Node newNode = new(value);
@@ -46,9 +43,6 @@ public class LinkedList
         }
     }
 
-    /// <summary>
-    /// Remove the last node in the linked list.
-    /// </summary>
     public void RemoveTail()
     {
         if (_tail == null) return;
@@ -65,9 +59,6 @@ public class LinkedList
         }
     }
 
-    /// <summary>
-    /// Replace all occurrences of oldValue with newValue.
-    /// </summary>
     public void Replace(int oldValue, int newValue)
     {
         Node? current = _head;
@@ -82,9 +73,6 @@ public class LinkedList
         }
     }
 
-    /// <summary>
-    /// Iterate backward through the linked list.
-    /// </summary>
     public IEnumerable<int> Reverse()
     {
         Node? current = _tail;
@@ -96,9 +84,6 @@ public class LinkedList
         }
     }
 
-    /// <summary>
-    /// Insert a new node after a specific node.
-    /// </summary>
     public void InsertAfter(Node? node, int value)
     {
         if (node == null) return;
@@ -114,16 +99,12 @@ public class LinkedList
 
         node.Next = newNode;
 
-        // If the node was the tail, update the tail
         if (node == _tail)
         {
             _tail = newNode;
         }
     }
 
-    /// <summary>
-    /// Remove the first node in the linked list.
-    /// </summary>
     public void RemoveHead()
     {
         if (_head == null) return;
@@ -140,28 +121,46 @@ public class LinkedList
         }
     }
 
-    /// <summary>
-    /// Iterate forward through the linked list.
-    /// </summary>
-    public IEnumerable<int> GetEnumerator()
+    public LinkedListEnumerator GetEnumerator()
     {
-        Node? current = _head;
-
-        while (current != null)
-        {
-            yield return current.Data;
-            current = current.Next;
-        }
+        return new LinkedListEnumerator(_head);
     }
 
-    // Overload example for addition operator
+    public class LinkedListEnumerator : IEnumerator<int>
+    {
+        private Node? _currentNode;
+        
+        public LinkedListEnumerator(Node? head)
+        {
+            _currentNode = head;
+        }
+
+        public int Current => _currentNode?.Data ?? throw new InvalidOperationException();
+
+        object? System.Collections.IEnumerator.Current => Current;
+
+        public bool MoveNext()
+        {
+            if (_currentNode == null) return false;
+
+            _currentNode = _currentNode.Next;
+            return _currentNode != null;
+        }
+
+        public void Reset()
+        {
+            _currentNode = null;
+        }
+
+        public void Dispose() { }
+    }
+
     public static LinkedList operator +(LinkedList list, int value)
     {
         list.InsertTail(value);
         return list;
     }
 
-    // Overload example for equality operator
     public static bool operator ==(LinkedList list1, LinkedList list2)
     {
         Node? current1 = list1._head;
@@ -175,15 +174,14 @@ public class LinkedList
             current2 = current2.Next;
         }
 
-        return current1 == null && current2 == null; // Both should be null to be equal
+        return current1 == null && current2 == null;
     }
 
     public static bool operator !=(LinkedList list1, LinkedList list2)
     {
-        return !(list1 == list2); // Negation of equality operator
+        return !(list1 == list2);
     }
 
-    // Overload comparison operators
     public static bool operator >(LinkedList list1, LinkedList list2)
     {
         int sum1 = list1.GetSum();
@@ -198,7 +196,6 @@ public class LinkedList
         return sum1 < sum2;
     }
 
-    // Helper method to calculate the sum of elements in the list
     private int GetSum()
     {
         int sum = 0;
@@ -213,7 +210,6 @@ public class LinkedList
         return sum;
     }
 
-    // Ensure proper equality check (needed for == and != operators to work correctly)
     public override bool Equals(object? obj)
     {
         if (obj is LinkedList other)
@@ -244,19 +240,16 @@ public class Program
     {
         LinkedList linkedList = new LinkedList();
 
-        // Example of adding values to the linked list using the overloaded + operator
         linkedList += 10;  // Adds 10 to the list
         linkedList += 20;  // Adds 20 to the list
         linkedList += 30;  // Adds 30 to the list
 
-        // Example of iterating forward through the linked list
         Console.WriteLine("Forward iteration:");
         foreach (var item in linkedList)
         {
             Console.WriteLine(item);
         }
 
-        // Example of replacing a value in the linked list
         linkedList.Replace(20, 25);
         Console.WriteLine("\nAfter replacing 20 with 25:");
         foreach (var item in linkedList)
@@ -264,14 +257,12 @@ public class Program
             Console.WriteLine(item);
         }
 
-        // Example of iterating backward through the linked list
         Console.WriteLine("\nBackward iteration:");
         foreach (var item in linkedList.Reverse())
         {
             Console.WriteLine(item);
         }
 
-        // Example of removing the last node (tail)
         linkedList.RemoveTail();
         Console.WriteLine("\nAfter removing the tail:");
         foreach (var item in linkedList)
@@ -279,7 +270,6 @@ public class Program
             Console.WriteLine(item);
         }
 
-        // Example of removing the first node (head)
         linkedList.RemoveHead();
         Console.WriteLine("\nAfter removing the head:");
         foreach (var item in linkedList)
